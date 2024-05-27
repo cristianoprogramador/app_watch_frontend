@@ -1,6 +1,7 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useContext } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -9,6 +10,7 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { signOut } = useContext(AuthContext);
 
   const isActive = (pathname: string) => location.pathname === pathname;
 
@@ -54,6 +56,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               className="w-10 h-10 rounded-full bg-contain cursor-pointer"
             />
           </div>
+          <div onClick={() => signOut()}>Logout</div>
         </div>
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>

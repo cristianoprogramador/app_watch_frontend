@@ -1,7 +1,10 @@
-import { useState } from "react";
+// src\pages\Login\index.tsx
+
+import { useContext, useEffect, useState } from "react";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const emailSchema = z.string().email({ message: "E-mail inválido" });
 const passwordSchema = z
@@ -12,10 +15,11 @@ const passwordSchema = z
 export function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>("user@example.com");
+  const [password, setPassword] = useState<string>("securePassword!");
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
+  const { signInByEmail, isAuthenticated, user } = useContext(AuthContext);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
@@ -74,8 +78,8 @@ export function Login() {
       valid = false;
     }
     if (valid) {
-      console.log(email, password);
-      console.log("Login successful");
+      await signInByEmail(email, password);
+
       navigate("/home");
     }
   };
@@ -83,6 +87,12 @@ export function Login() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/home", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <main className="flex min-h-screen w-full justify-between items-center bg-[#FFFFFF]">
