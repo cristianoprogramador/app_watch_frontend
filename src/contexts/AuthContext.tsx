@@ -52,10 +52,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const { data } = await api.get<UserDataDto>("/auth/verify-token", {
         headers: { Authorization: `Bearer ${parseCookies()["auth.token"]}` },
       });
-      console.log("verifyToken", data);
+      // console.log("verifyToken", data);
       setUser(data);
     } catch (error) {
       console.error("Token verification failed", error);
+      signOut()
       return null;
     }
   };
@@ -115,7 +116,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (token && userDataString) {
       try {
         const response = await verifyToken();
-        console.log(response);
+        // console.log(response);
         if (response) {
           console.log(response);
           setUser(response);

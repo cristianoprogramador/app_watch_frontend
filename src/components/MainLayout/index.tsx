@@ -1,7 +1,6 @@
 import React, { ReactNode, useContext } from "react";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContext";
+import DropdownMenu from "../DropdownMenu";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -10,7 +9,6 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { signOut } = useContext(AuthContext);
 
   const isActive = (pathname: string) => location.pathname === pathname;
 
@@ -50,13 +48,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className="p-4 flex flex-row justify-between">
           <div className="text-xl font-semibold">Bem Vindo ao Dashboard</div>
           <div className="flex flex-row gap-2">
-            <img
-              src="public/images/me.jpg"
-              alt=""
-              className="w-10 h-10 rounded-full bg-contain cursor-pointer"
-            />
+            <DropdownMenu />
           </div>
-          <div onClick={() => signOut()}>Logout</div>
         </div>
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
