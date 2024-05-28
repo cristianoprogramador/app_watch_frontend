@@ -1,6 +1,6 @@
 import React, { ReactNode, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import DropdownMenu from "../DropdownMenu";
+import { DropdownMenu } from "../DropdownMenu";
 
 interface MainLayoutProps {
   children: ReactNode;

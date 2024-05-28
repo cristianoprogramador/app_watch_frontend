@@ -5,7 +5,7 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 import { parseCookies, destroyCookie, setCookie } from "nookies";
 import { api } from "../utils/api";
 
-type UserDataDto = {
+export type UserDataDto = {
   uuid: string;
   email: string;
   type: string;
@@ -16,16 +16,16 @@ type UserDataDto = {
   };
 };
 
-type AuthResponseDto = {
+export type AuthResponseDto = {
   accessToken: string;
   userData: UserDataDto;
 };
 
-type AuthProviderProps = {
+export type AuthProviderProps = {
   children: ReactNode;
 };
 
-type AuthContextData = {
+export type AuthContextData = {
   signInByEmail: (
     email: string,
     password: string

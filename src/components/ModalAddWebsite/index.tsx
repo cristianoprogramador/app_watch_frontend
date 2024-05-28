@@ -2,10 +2,14 @@ import { SetStateAction, useState } from "react";
 import Modal from "../Modal";
 import ModalHeader from "../ModalHeader";
 import { FaRegTrashAlt } from "react-icons/fa";
+import axiosInstance, { api } from "../../utils/api";
+import { Button } from "../Button";
+import { UserDataDto } from "../../contexts/AuthContext";
 
 interface ModalAddWebsiteProps {
   modalInfo: boolean;
   setModalInfo: (value: SetStateAction<boolean>) => void;
+  user: UserDataDto | null;
 }
 
 interface Route {
@@ -14,9 +18,16 @@ interface Route {
   body: string;
 }
 
+const statusMessages = {
+  checking: { message: "Verificando...", className: "text-sm" },
+  online: { message: "Site está online", className: "text-green-500 text-sm" },
+  offline: { message: "Site está offline", className: "text-red-500 text-sm" },
+};
+
 export const ModalAddWebsite = ({
   modalInfo,
   setModalInfo,
+  user,
 }: ModalAddWebsiteProps) => {
   const [siteName, setSiteName] = useState("");
   const [siteUrl, setSiteUrl] = useState("");
@@ -24,12 +35,12 @@ export const ModalAddWebsite = ({
   const [routes, setRoutes] = useState<Route[]>([
     { method: "GET", route: "", body: "" },
   ]);
+  const [siteStatus, setSiteStatus] = useState<
+    "checking" | "online" | "offline" | ""
+  >("");
 
   const handleAddRoute = () => {
-    setRoutes([
-      ...routes,
-      { method: "GET", route: "", body: "" },
-    ]);
+    setRoutes([...routes, { method: "GET", route: "", body: "" }]);
   };
 
   const handleRemoveRoute = (index: number) => {
@@ -48,9 +59,42 @@ export const ModalAddWebsite = ({
     setRoutes(newRoutes);
   };
 
+  // const checkSiteStatus = async () => {
+  //   setSiteStatus("checking");
+  //   try {
+  //     const response = await axiosInstance.get("/website-monitoring/check", {
+  //       params: {
+  //         url: siteUrl,
+  //         token: token || undefined, // Só passa o token se ele existir
+  //       },
+  //     });
+  //     const result = response.data;
+  //     setSiteStatus(result.status);
+  //   } catch (error) {
+  //     setSiteStatus("offline");
+  //   }
+  // };
+
+  const handleAddWebsite = async () => {
+    try {
+      const response = await api.post("/website-monitoring", {
+        siteName: siteName,
+        siteUrl: siteUrl,
+        token: token,
+        routes: routes,
+        userId: user?.uuid,
+      });
+      const result = response.data;
+      console.log(result);
+      setModalInfo(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log({ siteName, siteUrl, token, routes });
+    handleAddWebsite();
   };
 
   return (
@@ -80,6 +124,11 @@ export const ModalAddWebsite = ({
             className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
             required
           />
+          {siteStatus && (
+            <div className={statusMessages[siteStatus].className}>
+              {statusMessages[siteStatus].message}
+            </div>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -149,21 +198,21 @@ export const ModalAddWebsite = ({
               )}
             </div>
           ))}
-          <button
+          <Button
             type="button"
             onClick={handleAddRoute}
             className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
           >
             Adicionar outra rota
-          </button>
+          </Button>
         </div>
-        <div className="flex justify-end">
-          <button
+        <div className="flex justify-end items-center space-x-4">
+          <Button
             type="submit"
             className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700"
           >
             Cadastrar
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

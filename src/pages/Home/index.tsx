@@ -1,41 +1,26 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "../../components/Button";
-import Modal from "../../components/Modal";
-import ModalHeader from "../../components/ModalHeader";
 import { ModalAddWebsite } from "../../components/ModalAddWebsite";
+import { api } from "../../utils/api";
+import { AuthContext } from "../../contexts/AuthContext";
+import { ProjectsData, Website } from "../../types/website-routes";
+
+interface SiteData {
+  name: string;
+  url: string;
+  registeredRoutes: number;
+  workingRoutes: number;
+  status: "Online" | "Offline" | "Warning";
+}
 
 export function Home() {
-  interface SiteData {
-    name: string;
-    url: string;
-    registeredRoutes: number;
-    workingRoutes: number;
-    status: "Online" | "Offline" | "Warning";
-  }
+  const { user } = useContext(AuthContext);
 
-  const sites: SiteData[] = [
-    {
-      name: "Create Burger",
-      url: "https://createburger.com.br/",
-      registeredRoutes: 5,
-      workingRoutes: 5,
-      status: "Online",
-    },
-    {
-      name: "Lithá - Pilates e Fisio",
-      url: "https://clinicalitha.com.br/",
-      registeredRoutes: 2,
-      workingRoutes: 0,
-      status: "Offline",
-    },
-    {
-      name: "My Life Dashboard",
-      url: "https://mylife-dashboard.vercel.app/",
-      registeredRoutes: 6,
-      workingRoutes: 5,
-      status: "Warning",
-    },
-  ];
+  const [modalInfo, setModalInfo] = useState(false);
+  const [actualPage, setActualPage] = useState<number>(1);
+  const [totalPerPage, setTotalPerPage] = useState<number>(10);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [projectsData, setProjectsData] = useState<ProjectsData | null>(null);
 
   const getStatusClass = (status: string) => {
     switch (status) {
@@ -50,66 +35,91 @@ export function Home() {
     }
   };
 
-  const [modalInfo, setModalInfo] = useState(false);
-
   const handleModalInfo = () => {
     setModalInfo(true);
   };
 
+  async function fetchProjects() {
+    try {
+      const response = await api.get(
+        `/website-monitoring/user/${user?.uuid}?page=${actualPage}&itemsPerPage=${totalPerPage}` +
+          (searchTerm ? `&search=${searchTerm}` : "")
+      );
+      const result = response.data;
+      setProjectsData(result);
+      console.log(result);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
   return (
-    <div className="grid gap-6 p-3 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-      {sites.map((site) => (
-        <div
-          key={site.name}
-          className="flex flex-col justify-between border rounded-md p-3 m-2"
-        >
-          <div className="flex flex-row justify-between gap-6">
-            <div className="flex flex-col gap-1">
-              <div>{site.name}</div>
-              <a
-                className="italic"
-                href={site.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {site.url}
-              </a>
-            </div>
-            <div
-              className={`p-2 border ${getStatusClass(
-                site.status
-              )} flex text-center items-center h-10 rounded-md cursor-pointer`}
-            >
-              {site.status}
-            </div>
-          </div>
-          <div className="flex flex-row justify-between mt-4">
-            <div className="flex flex-col gap-1">
-              <div>Rotas Cadastradas</div>
-              <div className="p-4 border rounded-md text-center">
-                {site.registeredRoutes}
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div>Rotas Funcionando</div>
-              <div className="p-4 border rounded-md text-center">
-                {site.workingRoutes}
-              </div>
-            </div>
-          </div>
-        </div>
-      ))}
-
-      <div className=" flex justify-center items-center text-center ">
-        <Button
-          onClick={() => handleModalInfo()}
-          className="h-14 w-32 bg-blue-500 hover:bg-blue-700 rounded-lg text-white border flex justify-center items-center text-center cursor-pointer"
-        >
-          Adicionar Site
-        </Button>
+    <div className="p-3">
+      <div className="p-3 flex justify-end gap-2">
+        <div>Total</div>
+        <div>{projectsData?.total}</div>
       </div>
+      <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+        {projectsData?.websites.map((site: Website) => (
+          <div
+            key={site.uuid}
+            className="flex flex-col justify-between border rounded-md p-3 m-2"
+          >
+            <div className="flex flex-row justify-between gap-6">
+              <div className="flex flex-col gap-1">
+                <div>{site.name}</div>
+                <a
+                  className="italic"
+                  href={site.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {site.url}
+                </a>
+              </div>
+              <div
+                className={`p-2 border ${getStatusClass(
+                  "Online"
+                )} flex text-center items-center h-10 rounded-md cursor-pointer`}
+              >
+                Online
+              </div>
+            </div>
+            <div className="flex flex-row justify-between mt-4">
+              <div className="flex flex-col gap-1">
+                <div>Rotas Cadastradas</div>
+                <div className="p-4 border rounded-md text-center">
+                  {site.routes.length}
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <div>Rotas Funcionando</div>
+                <div className="p-4 border rounded-md text-center">
+                  0 {/* Atualize esta lógica conforme necessário no futuro */}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+        <div className=" flex justify-center items-center text-center ">
+          <Button
+            onClick={() => handleModalInfo()}
+            className="h-14 w-32 bg-blue-500 hover:bg-blue-700 rounded-lg text-white border flex justify-center items-center text-center cursor-pointer"
+          >
+            Adicionar Site
+          </Button>
+        </div>
 
-      <ModalAddWebsite modalInfo={modalInfo} setModalInfo={setModalInfo} />
+        <ModalAddWebsite
+          modalInfo={modalInfo}
+          setModalInfo={setModalInfo}
+          user={user}
+        />
+      </div>
     </div>
   );
 }

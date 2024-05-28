@@ -3,10 +3,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import { FaUser, FaKey, FaSignOutAlt } from "react-icons/fa";
 
 interface DropdownMenuProps {}
 
-const DropdownMenu: React.FC<DropdownMenuProps> = () => {
+export const DropdownMenu: React.FC<DropdownMenuProps> = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -38,35 +39,49 @@ const DropdownMenu: React.FC<DropdownMenuProps> = () => {
       <img
         src="public/images/me.jpg"
         alt="Profile"
-        className="w-10 h-10 rounded-full bg-contain cursor-pointer"
+        className="w-8 h-8 rounded-full bg-contain cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       />
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
-          <ul>
-            <li
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+          <div className="bg-gray-300 h-14 relative">
+            <div className="flex items-center justify-center">
+              <img
+                src="public/images/me.jpg"
+                alt="ProfileBig"
+                className="w-14 h-14 rounded-full bg-contain cursor-pointer relative mt-3"
+              />
+            </div>
+          </div>
+          <div className="mt-4 flex flex-col items-center justify-center ">
+            <div className="text-sm">Cristiano</div>
+            <div className="text-xs">cristiano@email.com</div>
+          </div>
+          <div className="mt-4">
+            <div
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
               onClick={() => handleNavigate("/profile")}
             >
+              <FaUser className="mr-2" />
               Perfil
-            </li>
-            <li
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+            </div>
+            <div
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
               onClick={() => handleNavigate("/settings")}
             >
-              Configurações
-            </li>
-            <li
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              <FaKey className="mr-2" />
+              Alterar Senha
+            </div>
+            <div
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
               onClick={() => signOut()}
             >
+              <FaSignOutAlt className="mr-2" />
               Logout
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 };
-
-export default DropdownMenu;
