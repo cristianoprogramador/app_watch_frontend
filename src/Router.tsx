@@ -12,6 +12,8 @@ import { Home } from "./pages/Home";
 import { Settings } from "./pages/Settings";
 import { Profile } from "./pages/Profile";
 import { AuthContext } from "./contexts/AuthContext";
+import { Register } from "./pages/Register";
+import { RecoverPassword } from "./pages/RecoverPassword";
 
 function PrivateRoute() {
   const { user, isAuthenticated } = useContext(AuthContext);
@@ -31,6 +33,8 @@ export function ProjectRoutes() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/recover-password" element={<RecoverPassword />} />
           <Route element={<PrivateRoute />}>
             <Route path="/home" element={<Home />} />
             <Route path="/settings" element={<Settings />} />

@@ -59,9 +59,11 @@ export function Home() {
 
   return (
     <div className="p-3">
-      <div className="p-3 flex justify-end gap-2">
-        <div>Total</div>
-        <div>{projectsData?.total}</div>
+      <div className="flex justify-end">
+        <div className="p-3 flex flex-row gap-1 border rounded-md">
+          <div>Total de Projetos :</div>
+          <div className="font-semibold text-base">({projectsData?.total})</div>
+        </div>
       </div>
       <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
         {projectsData?.websites.map((site: Website) => (

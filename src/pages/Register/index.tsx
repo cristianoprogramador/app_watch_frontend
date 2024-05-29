@@ -1,33 +1,37 @@
-// src\pages\Login\index.tsx
+// src\pages\Register\index.tsx
 
 import { useContext, useEffect, useState } from "react";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { AuthContext } from "../../contexts/AuthContext";
-import { FcGoogle } from "react-icons/fc";
-import { ModalSendEmail } from "../../components/ModalSendEmail";
-import { Button } from "../../components/Button";
+import { api } from "../../utils/api";
+import InputMask from "react-input-mask";
 
 const emailSchema = z.string().email({ message: "E-mail inválido" });
+
 const passwordSchema = z
   .string()
   .min(8, { message: "Senha deve ter pelo menos 8 caracteres" })
   .regex(/[A-Z]/, { message: "Senha deve conter uma letra maiúscula" });
 
-export function Login() {
+interface ApiResponse {
+  message: string;
+}
+
+export function Register() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("user@example.com");
   const [password, setPassword] = useState<string>("securePassword!");
+  const [name, setName] = useState<string>("John Doe");
+  const [document, setDocument] = useState<string>("");
+  const [typeDocument, setTypeDocument] = useState<string>("CPF");
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
-  const { signInByEmail, isAuthenticated, user } = useContext(AuthContext);
-  const [modalInfo, setModalInfo] = useState(false);
+  const [documentError, setDocumentError] = useState<string>("");
 
-  const handleModalInfo = () => {
-    setModalInfo(true);
-  };
+  const { signInByEmail, isAuthenticated, user } = useContext(AuthContext);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
@@ -85,10 +89,38 @@ export function Login() {
       }
       valid = false;
     }
-    if (valid) {
-      await signInByEmail(email, password);
 
-      navigate("/home");
+    if (!document.trim()) {
+      setDocumentError("Documento não pode estar vazio");
+      valid = false;
+    } else {
+      setDocumentError("");
+    }
+
+    if (valid) {
+      const payload = {
+        email,
+        password,
+        name,
+        type: "client",
+        typeDocument,
+        document,
+      };
+      try {
+        console.log(payload);
+        const response = await api.post("/auth/register-new-client", payload);
+        console.log(response.data);
+        // navigate("/login");
+      } catch (error) {
+        if (error instanceof Error) {
+          const axiosError = error as { response?: { data?: ApiResponse } };
+          alert(
+            `Erro ao registrar usuário: ${axiosError?.response?.data?.message}`
+          );
+        } else {
+          alert("Erro desconhecido ao registrar usuário.");
+        }
+      }
     }
   };
 
@@ -107,11 +139,11 @@ export function Login() {
       <div className="flex flex-row h-full gap-4 items-center justify-center bg-white w-full">
         <div className="flex lg:w-1/2 justify-center items-center">
           <div className="p-10 rounded-md sm:border">
-            <div className=" text-center text-2xl lg:text-4xl font-bold">
-              Acesse sua Conta
+            <div className=" text-center text-xl lg:text-2xl font-bold">
+              Preencha o Formulário
             </div>
             <div className="mt-3 text-sm">
-              Seja bem-vindo, por favor faça login em sua conta.
+              Por favor preencha todos os campos.
             </div>
             <form className="flex flex-col gap-2 items-start justify-start mt-6">
               <label className="text-sm w-auto">E-mail:</label>
@@ -154,51 +186,47 @@ export function Login() {
               {passwordError && (
                 <div className="text-sm text-red-500">{passwordError}</div>
               )}
-              <div className="flex flex-row items-center justify-end md:w-full">
-                <div
-                  className="text-indigo-900 text-right text-sm cursor-pointer"
-                  onClick={() => handleModalInfo()}
-                >
-                  Esqueceu sua senha?
-                </div>
-              </div>
-              <Button
+              <label className="text-sm w-auto">Tipo de Documento:</label>
+              <select
+                name="typeDocument"
+                className="font-light text-left text-sm w-full border px-3 py-2 rounded-md"
+                value={typeDocument}
+                onChange={(e) => setTypeDocument(e.target.value)}
+                required
+              >
+                <option value="CPF">CPF</option>
+                <option value="CNPJ">CNPJ</option>
+              </select>
+
+              <label className="text-sm w-auto">Documento:</label>
+              <InputMask
+                mask={
+                  typeDocument === "CPF"
+                    ? "999.999.999-99"
+                    : "99.999.999/9999-99"
+                }
+                value={document}
+                onChange={(e) => setDocument(e.target.value)}
+                className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
+                required
+              />
+              {documentError && (
+                <div className="text-sm text-red-500">{documentError}</div>
+              )}
+              <button
                 className="cursor-pointer font-semibold mt-1 rounded-lg text-base text-center w-full bg-[#0C346E] text-white hover:opacity-80 py-3"
                 onClick={handleSubmit}
               >
-                Entrar no Sistema
-              </Button>
-              <div className="items-center flex justify-center text-center w-full gap-3">
-                <div className="w-full h-[1px] bg-gray-400" />
-                ou
-                <div className="w-full h-[1px] bg-gray-400" />
-              </div>
-              <Button
-                className="cursor-pointer font-semibold rounded-lg text-base text-center w-full border border-[#0C346E] hover:opacity-80 py-3 flex items-center justify-center gap-5"
-                onClick={handleSubmit}
-              >
-                <div>
-                  <FcGoogle size={30} />
-                </div>
-                <div className="text-gray-500">Entre com Google</div>
-              </Button>
+                Cadastrar Usuário
+              </button>
             </form>
             <div className="flex flex-row gap-3 items-center justify-center md:w-full mt-5">
-              <div className="text-sm ">Ainda não tem conta?</div>
+              <div className="text-sm ">Já tem conta?</div>
               <div
                 className="text-blue-700 font-semibold text-right text-sm cursor-pointer"
-                onClick={() => navigate("/register")}
+                onClick={() => navigate("/login")}
               >
-                Cadastre-se agora
-              </div>
-            </div>
-            <div className="flex flex-row gap-4 items-center justify-center md:ml-[0] mt-6 w-auto">
-              <div className="text-sm w-auto cursor-pointer hover:opacity-70">
-                Políticas de Privacidade
-              </div>
-              <div className="text-base">-</div>
-              <div className="text-sm w-auto cursor-pointer hover:opacity-70">
-                Termos de Uso
+                Faça o login agora
               </div>
             </div>
           </div>
@@ -216,8 +244,6 @@ export function Login() {
           }}
         ></div>
       </div>
-
-      <ModalSendEmail modalInfo={modalInfo} setModalInfo={setModalInfo} />
     </main>
   );
 }
