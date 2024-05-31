@@ -1,4 +1,4 @@
-// src\pages\Login\index.tsx
+// src/pages/Login/index.tsx
 
 import { useContext, useEffect, useState } from "react";
 import { z } from "zod";
@@ -8,6 +8,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { FcGoogle } from "react-icons/fc";
 import { ModalSendEmail } from "../../components/ModalSendEmail";
 import { Button } from "../../components/Button";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const emailSchema = z.string().email({ message: "E-mail inválido" });
 const passwordSchema = z
@@ -22,7 +23,8 @@ export function Login() {
   const [password, setPassword] = useState<string>("securePassword!");
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
-  const { signInByEmail, isAuthenticated, user } = useContext(AuthContext);
+  const { signInByEmail, isAuthenticated, signInByGoogle } =
+    useContext(AuthContext);
   const [modalInfo, setModalInfo] = useState(false);
 
   const handleModalInfo = () => {
@@ -55,9 +57,21 @@ export function Login() {
     }
   };
 
-  const handleSubmit = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const token = tokenResponse.access_token;
+        await signInByGoogle(token);
+        navigate("/home");
+      } catch (error) {
+        console.error("Erro ao fazer login com Google:", error);
+      }
+    },
+    onError: () => {
+      console.log("Login Failed");
+    },
+  });
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let valid = true;
 
@@ -113,7 +127,10 @@ export function Login() {
             <div className="mt-3 text-sm">
               Seja bem-vindo, por favor faça login em sua conta.
             </div>
-            <form className="flex flex-col gap-2 items-start justify-start mt-6">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-2 items-start justify-start mt-6"
+            >
               <label className="text-sm w-auto">E-mail:</label>
               <input
                 name="email"
@@ -164,7 +181,7 @@ export function Login() {
               </div>
               <Button
                 className="cursor-pointer font-semibold mt-1 rounded-lg text-base text-center w-full bg-[#0C346E] text-white hover:opacity-80 py-3"
-                onClick={handleSubmit}
+                type="submit"
               >
                 Entrar no Sistema
               </Button>
@@ -175,7 +192,10 @@ export function Login() {
               </div>
               <Button
                 className="cursor-pointer font-semibold rounded-lg text-base text-center w-full border border-[#0C346E] hover:opacity-80 py-3 flex items-center justify-center gap-5"
-                onClick={handleSubmit}
+                onClick={(e) => {
+                  e.preventDefault();
+                  googleLogin();
+                }}
               >
                 <div>
                   <FcGoogle size={30} />

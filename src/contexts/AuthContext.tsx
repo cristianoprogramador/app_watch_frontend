@@ -30,6 +30,7 @@ export type AuthContextData = {
     email: string,
     password: string
   ) => Promise<UserDataDto | null>;
+  signInByGoogle: (token: string) => Promise<UserDataDto | null>;
   signOut: () => void;
   user: UserDataDto | null;
   isAuthenticated: boolean;
@@ -56,7 +57,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(data);
     } catch (error) {
       console.error("Token verification failed", error);
-      signOut()
+      signOut();
       return null;
     }
   };
@@ -103,8 +104,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const signInByGoogle = async (token: string): Promise<UserDataDto | null> => {
+    try {
+      const { data } = await api.post<AuthResponseDto>("/auth/google", {
+        token,
+      });
+
+      setCookie(null, "auth.token", data.accessToken, {
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        path: "/",
+      });
+
+      localStorage.setItem("user", JSON.stringify(data.userData));
+      setUser(data.userData);
+      return data.userData;
+    } catch (error) {
+      console.error("Google login failed", error);
+      return null;
+    }
+  };
+
   const signOut = () => {
-    destroyCookie(null, "auth.token", { path: "/home" });
+    destroyCookie(null, "auth.token", { path: "/" });
     localStorage.removeItem("user");
     setUser(null);
   };
@@ -131,6 +152,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         signInByEmail,
+        signInByGoogle,
         signOut,
         user,
         isAuthenticated: !!user,

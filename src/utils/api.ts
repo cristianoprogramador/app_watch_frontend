@@ -3,10 +3,8 @@
 import axios, { AxiosInstance } from "axios";
 import { parseCookies } from "nookies";
 
-const baseURL = "http://localhost:3000";
-
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: baseURL,
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 axiosInstance.interceptors.request.use((config) => {
