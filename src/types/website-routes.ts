@@ -1,25 +1,35 @@
+// src/types/website-routes.ts
+
 export interface Route {
   uuid: string;
-  websiteId: string;
   method: string;
-  path: string;
+  route: string;
   body: string;
+  websiteId: string;
+  path: string;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string | null;
+  deletedAt?: string | null;
+}
+
+export interface SiteStatus {
+  uuid: string;
+  siteId: string;
+  status: string;
+  lastChecked: string;
 }
 
 export interface Website {
-  status: string;
   uuid: string;
   name: string;
   url: string;
-  token: string;
+  token?: string;
   userId: string;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string | null;
+  deletedAt?: string | null;
   routes: Route[];
+  siteStatus: SiteStatus;
 }
 
 export interface ProjectsData {

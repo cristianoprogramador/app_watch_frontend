@@ -1,15 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import { Button } from "../../components/Button";
-import { ModalAddWebsite } from "../../components/ModalAddWebsite";
 import { api } from "../../utils/api";
 import { AuthContext } from "../../contexts/AuthContext";
 import { ProjectsData, Website } from "../../types/website-routes";
 import io from "socket.io-client";
+import { ModalWebsite } from "../../components/ModalWebsite";
 
 export function Home() {
   const { user } = useContext(AuthContext);
 
   const [modalInfo, setModalInfo] = useState(false);
+  const [currentWebsite, setCurrentWebsite] = useState<Website | null>(null);
+
   const [actualPage, setActualPage] = useState<number>(1);
   const [totalPerPage, setTotalPerPage] = useState<number>(10);
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,7 +25,6 @@ export function Home() {
         return "border-red-600 text-red-600 hover:bg-red-200";
       case "Warning":
         return "border-yellow-600 text-yellow-600 hover:bg-yellow-200";
-        return "border-red-600 text-red-600 hover:bg-red-200";
       case "Loading":
         return "border-orange-600 text-orange-600 hover:bg-orange-200";
       default:
@@ -31,7 +32,13 @@ export function Home() {
     }
   };
 
-  const handleModalInfo = () => {
+  const handleModalInfo = (website: Website | null = null) => {
+    setCurrentWebsite(website);
+    setModalInfo(true);
+  };
+
+  const handleAddNewSite = () => {
+    setCurrentWebsite(null);
     setModalInfo(true);
   };
 
@@ -41,11 +48,31 @@ export function Home() {
         `/website-monitoring/user/${user?.uuid}?page=${actualPage}&itemsPerPage=${totalPerPage}` +
           (searchTerm ? `&search=${searchTerm}` : "")
       );
+      console.log(response.data);
       setProjectsData(response.data);
     } catch (error) {
       console.error(error);
     }
   }
+
+  const updateSiteStatus = (update: { siteUuid: string; status: string }) => {
+    setProjectsData((currentData) => {
+      if (!currentData) return null;
+      const updatedWebsites = currentData.websites.map((site) => {
+        if (site.uuid === update.siteUuid) {
+          return {
+            ...site,
+            siteStatus: {
+              ...site.siteStatus,
+              status: update.status,
+            },
+          };
+        }
+        return site;
+      });
+      return { ...currentData, websites: updatedWebsites };
+    });
+  };
 
   useEffect(() => {
     fetchProjects();
@@ -53,19 +80,7 @@ export function Home() {
       query: { userId: user?.uuid },
     });
 
-    socket.on("statusUpdate", (update) => {
-      console.log("Status Update:", update);
-      setProjectsData((currentData) => {
-        if (!currentData) return null;
-        const updatedWebsites = currentData?.websites.map((site) => {
-          if (site.uuid === update.siteUuid) {
-            return { ...site, status: update.status };
-          }
-          return site;
-        });
-        return { ...currentData, websites: updatedWebsites };
-      });
-    });
+    socket.on("statusUpdate", updateSiteStatus);
 
     return () => {
       socket.disconnect();
@@ -84,13 +99,14 @@ export function Home() {
         {projectsData?.websites.map((site: Website) => (
           <div
             key={site.uuid}
-            className="flex flex-col justify-between border rounded-md p-3 m-2"
+            className="flex flex-col justify-between border rounded-md p-3 m-2 cursor-pointer"
+            onClick={() => handleModalInfo(site)}
           >
             <div className="flex flex-row justify-between gap-6">
               <div className="flex flex-col gap-1">
                 <div>{site.name}</div>
                 <a
-                  className="italic"
+                  className="italic hover:text-blue-700"
                   href={site.url}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -103,7 +119,7 @@ export function Home() {
                   "Online"
                 )} flex text-center items-center h-10 rounded-md cursor-pointer`}
               >
-                {site.status}
+                {site.siteStatus.status}
               </div>
             </div>
             <div className="flex flex-row justify-between mt-4">
@@ -124,17 +140,19 @@ export function Home() {
         ))}
         <div className=" flex justify-center items-center text-center ">
           <Button
-            onClick={() => handleModalInfo()}
+            onClick={handleAddNewSite}
             className="h-14 w-32 bg-blue-500 hover:bg-blue-700 rounded-lg text-white border flex justify-center items-center text-center cursor-pointer"
           >
             Adicionar Site
           </Button>
         </div>
 
-        <ModalAddWebsite
+        <ModalWebsite
           modalInfo={modalInfo}
           setModalInfo={setModalInfo}
           user={user}
+          websiteData={currentWebsite}
+          fetchProjects={fetchProjects}
         />
       </div>
     </div>

@@ -1,47 +1,46 @@
-import { SetStateAction, useState } from "react";
+// src\components\ModalWebsite\index.tsx
+
+import { SetStateAction, useEffect, useState } from "react";
 import Modal from "../Modal";
 import ModalHeader from "../ModalHeader";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { api } from "../../utils/api";
 import { Button } from "../Button";
 import { UserDataDto } from "../../contexts/AuthContext";
-
-interface ModalAddWebsiteProps {
-  modalInfo: boolean;
-  setModalInfo: (value: SetStateAction<boolean>) => void;
-  user: UserDataDto | null;
-  fetchProjects: () => Promise<void>;
-}
+import { Website } from "../../types/website-routes";
 
 interface Route {
   method: string;
   route: string;
   body: string;
+  uuid: string;
 }
 
-const statusMessages = {
-  checking: { message: "Verificando...", className: "text-sm" },
-  online: { message: "Site está online", className: "text-green-500 text-sm" },
-  offline: { message: "Site está offline", className: "text-red-500 text-sm" },
-};
+interface ModalWebsiteProps {
+  modalInfo: boolean;
+  setModalInfo: (value: SetStateAction<boolean>) => void;
+  user: UserDataDto | null;
+  fetchProjects: () => Promise<void>;
+  websiteData?: Website | null; // Corrigido para combinar com o tipo real que é passado
+}
 
-export const ModalAddWebsite = ({
+export const ModalWebsite = ({
   modalInfo,
   setModalInfo,
   user,
   fetchProjects,
-}: ModalAddWebsiteProps) => {
-  const [siteName, setSiteName] = useState("");
-  const [siteUrl, setSiteUrl] = useState("");
-  const [token, setToken] = useState("");
-  const [routes, setRoutes] = useState<Route[]>([]);
-
-  const [siteStatus, setSiteStatus] = useState<
-    "checking" | "online" | "offline" | ""
-  >("");
+  websiteData = null,
+}: ModalWebsiteProps) => {
+  const isEditing = websiteData !== null;
+  const [siteName, setSiteName] = useState(isEditing ? websiteData.name : "");
+  const [siteUrl, setSiteUrl] = useState(isEditing ? websiteData.url : "");
+  const [token, setToken] = useState(isEditing ? websiteData.token : "");
+  const [routes, setRoutes] = useState<Route[]>(
+    isEditing ? websiteData.routes : []
+  );
 
   const handleAddRoute = () => {
-    setRoutes([...routes, { method: "GET", route: "", body: "" }]);
+    setRoutes([...routes, { method: "GET", route: "", body: "", uuid: "" }]);
   };
 
   const handleRemoveRoute = (index: number) => {
@@ -60,32 +59,61 @@ export const ModalAddWebsite = ({
     setRoutes(newRoutes);
   };
 
-  const handleAddWebsite = async () => {
+  const handleAddOrEditWebsite = async () => {
+    const url = isEditing
+      ? `/website-monitoring/${websiteData?.uuid}`
+      : "/website-monitoring";
+    const method = isEditing ? "patch" : "post";
+
     try {
-      const response = await api.post("/website-monitoring", {
-        siteName: siteName,
-        siteUrl: siteUrl,
-        token: token,
-        routes: routes,
+      await api[method](url, {
+        name: siteName,
+        url: siteUrl,
+        token,
+        routes,
         userId: user?.uuid,
       });
-      const result = response.data;
-      console.log(result);
-      setModalInfo(false);
       fetchProjects();
+      setModalInfo(false);
     } catch (error) {
-      console.error(error);
+      console.error("Error saving the website:", error);
+    }
+  };
+
+  const handleDeleteRoute = async (routeId: string) => {
+    try {
+      const response = await api.delete(`/website-monitoring/routes/${routeId}`);
+      console.log("Route deleted successfully", response);
+    } catch (error) {
+      console.error("Failed to delete the route", error);
     }
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    handleAddWebsite();
+    handleAddOrEditWebsite();
   };
+
+  useEffect(() => {
+    if (websiteData) {
+      setSiteName(websiteData.name || "");
+      setSiteUrl(websiteData.url || "");
+      setToken(websiteData.token || "");
+      setRoutes(websiteData.routes || []);
+    } else {
+      setSiteName("");
+      setSiteUrl("");
+      setToken("");
+      setRoutes([]);
+    }
+  }, [websiteData]);
 
   return (
     <Modal isOpen={modalInfo} setIsOpen={setModalInfo}>
-      <ModalHeader onClose={() => setModalInfo(false)} title="Cadastrar Site" />
+      <ModalHeader
+        onClose={() => setModalInfo(false)}
+        title={isEditing ? "Editar Site" : "Cadastrar Site"}
+      />
       <form onSubmit={handleSubmit} className="space-y-4 p-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -110,11 +138,6 @@ export const ModalAddWebsite = ({
             className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
             required
           />
-          {siteStatus && (
-            <div className={statusMessages[siteStatus].className}>
-              {statusMessages[siteStatus].message}
-            </div>
-          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -165,13 +188,23 @@ export const ModalAddWebsite = ({
                   className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
                   placeholder={`Rota ${index + 1}`}
                 />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveRoute(index)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <FaRegTrashAlt />
-                </button>
+                {websiteData !== null ? (
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteRoute(route.uuid)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <FaRegTrashAlt />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveRoute(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <FaRegTrashAlt />
+                  </button>
+                )}
               </div>
               {(route.method === "POST" || route.method === "PUT") && (
                 <div>
@@ -206,7 +239,7 @@ export const ModalAddWebsite = ({
             type="submit"
             className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700"
           >
-            Cadastrar
+            {websiteData !== null ? "Atualizar" : "Cadastrar"}
           </Button>
         </div>
       </form>
