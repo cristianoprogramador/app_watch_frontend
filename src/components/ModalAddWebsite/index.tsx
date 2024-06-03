@@ -32,9 +32,8 @@ export const ModalAddWebsite = ({
   const [siteName, setSiteName] = useState("");
   const [siteUrl, setSiteUrl] = useState("");
   const [token, setToken] = useState("");
-  const [routes, setRoutes] = useState<Route[]>([
-    { method: "GET", route: "", body: "" },
-  ]);
+  const [routes, setRoutes] = useState<Route[]>([]);
+
   const [siteStatus, setSiteStatus] = useState<
     "checking" | "online" | "offline" | ""
   >("");
@@ -58,22 +57,6 @@ export const ModalAddWebsite = ({
     );
     setRoutes(newRoutes);
   };
-
-  // const checkSiteStatus = async () => {
-  //   setSiteStatus("checking");
-  //   try {
-  //     const response = await axiosInstance.get("/website-monitoring/check", {
-  //       params: {
-  //         url: siteUrl,
-  //         token: token || undefined, // Só passa o token se ele existir
-  //       },
-  //     });
-  //     const result = response.data;
-  //     setSiteStatus(result.status);
-  //   } catch (error) {
-  //     setSiteStatus("offline");
-  //   }
-  // };
 
   const handleAddWebsite = async () => {
     try {
@@ -142,9 +125,19 @@ export const ModalAddWebsite = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Rotas
-          </label>
+          {routes.length === 0 && (
+            <Button
+              onClick={handleAddRoute}
+              className="my-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
+            >
+              Adicionar Rota
+            </Button>
+          )}
+          {routes.length > 0 && (
+            <label className="block text-sm font-medium text-gray-700">
+              Rotas
+            </label>
+          )}
           {routes.map((route, index) => (
             <div key={index} className="space-y-2 mt-2 border p-2 rounded-md">
               <div className="flex items-center space-x-4">
@@ -154,7 +147,6 @@ export const ModalAddWebsite = ({
                     handleRouteChange(index, "method", e.target.value)
                   }
                   className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
-                  required
                 >
                   <option value="GET">GET</option>
                   <option value="POST">POST</option>
@@ -169,17 +161,14 @@ export const ModalAddWebsite = ({
                   }
                   className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
                   placeholder={`Rota ${index + 1}`}
-                  required
                 />
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveRoute(index)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <FaRegTrashAlt />
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveRoute(index)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <FaRegTrashAlt />
+                </button>
               </div>
               {(route.method === "POST" || route.method === "PUT") && (
                 <div>
@@ -198,13 +187,16 @@ export const ModalAddWebsite = ({
               )}
             </div>
           ))}
-          <Button
-            type="button"
-            onClick={handleAddRoute}
-            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
-          >
-            Adicionar outra rota
-          </Button>
+
+          {routes.length > 0 && (
+            <Button
+              type="button"
+              onClick={handleAddRoute}
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
+            >
+              Adicionar outra rota
+            </Button>
+          )}
         </div>
         <div className="flex justify-end items-center space-x-4">
           <Button

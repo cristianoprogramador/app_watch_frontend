@@ -4,14 +4,7 @@ import { ModalAddWebsite } from "../../components/ModalAddWebsite";
 import { api } from "../../utils/api";
 import { AuthContext } from "../../contexts/AuthContext";
 import { ProjectsData, Website } from "../../types/website-routes";
-
-interface SiteData {
-  name: string;
-  url: string;
-  registeredRoutes: number;
-  workingRoutes: number;
-  status: "Online" | "Offline" | "Warning";
-}
+import io from "socket.io-client";
 
 export function Home() {
   const { user } = useContext(AuthContext);
@@ -30,6 +23,9 @@ export function Home() {
         return "border-red-600 text-red-600 hover:bg-red-200";
       case "Warning":
         return "border-yellow-600 text-yellow-600 hover:bg-yellow-200";
+        return "border-red-600 text-red-600 hover:bg-red-200";
+      case "Loading":
+        return "border-orange-600 text-orange-600 hover:bg-orange-200";
       default:
         return "";
     }
@@ -45,9 +41,7 @@ export function Home() {
         `/website-monitoring/user/${user?.uuid}?page=${actualPage}&itemsPerPage=${totalPerPage}` +
           (searchTerm ? `&search=${searchTerm}` : "")
       );
-      const result = response.data;
-      setProjectsData(result);
-      console.log(result);
+      setProjectsData(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -55,7 +49,28 @@ export function Home() {
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+    const socket = io(import.meta.env.VITE_API_URL, {
+      query: { userId: user?.uuid },
+    });
+
+    socket.on("statusUpdate", (update) => {
+      console.log("Status Update:", update);
+      setProjectsData((currentData) => {
+        if (!currentData) return null;
+        const updatedWebsites = currentData?.websites.map((site) => {
+          if (site.uuid === update.siteUuid) {
+            return { ...site, status: update.status };
+          }
+          return site;
+        });
+        return { ...currentData, websites: updatedWebsites };
+      });
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user?.uuid]);
 
   return (
     <div className="p-3">
@@ -88,7 +103,7 @@ export function Home() {
                   "Online"
                 )} flex text-center items-center h-10 rounded-md cursor-pointer`}
               >
-                Online
+                {site.status}
               </div>
             </div>
             <div className="flex flex-row justify-between mt-4">

@@ -10,6 +10,7 @@ export interface Route {
 }
 
 export interface Website {
+  status: string;
   uuid: string;
   name: string;
   url: string;
