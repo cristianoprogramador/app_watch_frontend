@@ -9,6 +9,9 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+
+  --sidebar-bg-light: #1e40af;
+  --sidebar-bg-dark: #162b67;
 }
 
 @keyframes marquee {
@@ -37,4 +40,12 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+}
+
+.light {
+  --sidebar-bg: var(--sidebar-bg-light);
+}
+
+.dark {
+  --sidebar-bg: var(--sidebar-bg-dark);
 }

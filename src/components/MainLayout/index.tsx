@@ -16,7 +16,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <div className="w-48 bg-blue-800 text-white">
+      <div className="w-48 bg-sidebar-bg text-white">
         <div className="p-5 text-xl font-semibold select-none">App-Watch</div>
         <ul className="mt-12">
           <li

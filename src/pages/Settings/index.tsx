@@ -1,12 +1,16 @@
+import { useTheme } from "../../contexts/ThemeContext";
+
 interface GitHubButtonProps {
   link: string;
   text: string;
 }
 
 export function Settings() {
+  const { theme, toggleTheme } = useTheme();
+
   const GitHubButton = ({ link, text }: GitHubButtonProps) => {
     const handleClick = () => {
-      window.open(link, '_blank');
+      window.open(link, "_blank");
     };
 
     return (
@@ -17,6 +21,13 @@ export function Settings() {
         <div>{text}</div>
       </button>
     );
+  };
+
+  const handleThemeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedTheme = event.target.value;
+    if (selectedTheme !== theme) {
+      toggleTheme();
+    }
   };
 
   return (
@@ -33,7 +44,10 @@ export function Settings() {
             </div>
             <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg p-4">
               <div>Exibição</div>
-              <div>Modo Claro</div>
+              <select className="bg-transparent" onChange={handleThemeChange} value={theme}>
+                <option value="light">Modo Claro</option>
+                <option value="dark">Modo Escuro</option>
+              </select>
             </div>
             <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg p-4">
               <div>Tempo de Atualização</div>
