@@ -21,7 +21,7 @@ interface ModalWebsiteProps {
   setModalInfo: (value: SetStateAction<boolean>) => void;
   user: UserDataDto | null;
   fetchProjects: () => Promise<void>;
-  websiteData?: Website | null; // Corrigido para combinar com o tipo real que é passado
+  websiteData?: Website | null;
 }
 
 export const ModalWebsite = ({
@@ -41,6 +41,24 @@ export const ModalWebsite = ({
 
   const handleAddRoute = () => {
     setRoutes([...routes, { method: "GET", route: "", body: "", uuid: "" }]);
+  };
+
+  const handleDeleteWebsites = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    const confirmDelete = window.confirm(
+      "Você tem certeza que deseja excluir o site?"
+    );
+    if (!confirmDelete) return;
+    try {
+      await api.delete(`/website-monitoring/${websiteData?.uuid}`);
+      // console.log("Route deleted successfully", response);
+      fetchProjects();
+      setModalInfo(false);
+    } catch (error) {
+      console.error("Failed to delete the website", error);
+    }
   };
 
   const handleRemoveRoute = (index: number) => {
@@ -81,9 +99,17 @@ export const ModalWebsite = ({
   };
 
   const handleDeleteRoute = async (routeId: string) => {
+    const confirmDelete = window.confirm(
+      "Você tem certeza que deseja excluir a rota?"
+    );
+    if (!confirmDelete) return;
     try {
-      const response = await api.delete(`/website-monitoring/routes/${routeId}`);
-      console.log("Route deleted successfully", response);
+      const response = await api.delete(
+        `/website-monitoring/routes/${routeId}`
+      );
+      // console.log("Route deleted successfully", response);
+      fetchProjects();
+      setModalInfo(false);
     } catch (error) {
       console.error("Failed to delete the route", error);
     }
@@ -235,6 +261,14 @@ export const ModalWebsite = ({
           )}
         </div>
         <div className="flex justify-end items-center space-x-4">
+          {websiteData !== null && (
+            <Button
+              onClick={handleDeleteWebsites}
+              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700"
+            >
+              Excluir Site
+            </Button>
+          )}
           <Button
             type="submit"
             className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700"

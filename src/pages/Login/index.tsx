@@ -129,7 +129,7 @@ export function Login() {
             </div>
             <form
               onSubmit={handleSubmit}
-              className="flex flex-col gap-2 items-start justify-start mt-6"
+              className="flex flex-col gap-2 items-start justify-start mt-5"
             >
               <label className="text-sm w-auto">E-mail:</label>
               <input
@@ -140,7 +140,7 @@ export function Login() {
                 onChange={handleEmailChange}
               />
               {emailError && (
-                <div className="text-sm text-red-500">{emailError}</div>
+                <div className="text-xs text-red-500">{emailError}</div>
               )}
 
               <label className="text-sm w-auto">Senha:</label>
@@ -169,11 +169,11 @@ export function Login() {
                 </div>
               </div>
               {passwordError && (
-                <div className="text-sm text-red-500">{passwordError}</div>
+                <div className="text-xs text-red-500">{passwordError}</div>
               )}
               <div className="flex flex-row items-center justify-end md:w-full">
                 <div
-                  className="text-indigo-900 text-right text-sm cursor-pointer"
+                  className="text-blue-700 font-semibold text-right text-sm cursor-pointer"
                   onClick={() => handleModalInfo()}
                 >
                   Esqueceu sua senha?
@@ -209,32 +209,15 @@ export function Login() {
                 className="text-blue-700 font-semibold text-right text-sm cursor-pointer"
                 onClick={() => navigate("/register")}
               >
-                Cadastre-se agora
-              </div>
-            </div>
-            <div className="flex flex-row gap-4 items-center justify-center md:ml-[0] mt-6 w-auto">
-              <div className="text-sm w-auto cursor-pointer hover:opacity-70">
-                Políticas de Privacidade
-              </div>
-              <div className="text-base">-</div>
-              <div className="text-sm w-auto cursor-pointer hover:opacity-70">
-                Termos de Uso
+                Cadastre-se agora!
               </div>
             </div>
           </div>
         </div>
 
-        <div
-          className="hidden lg:flex animate-fadeIn"
-          style={{
-            flex: 1,
-            backgroundImage: "url('public/images/background.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "left",
-            width: "100%",
-            height: "100vh",
-          }}
-        ></div>
+        <div className="hidden lg:flex animate-fadeIn">
+          <img src="public/images/login.png" alt="" />
+        </div>
       </div>
 
       <ModalSendEmail modalInfo={modalInfo} setModalInfo={setModalInfo} />

@@ -8,12 +8,13 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../utils/api";
 import InputMask from "react-input-mask";
 
+const nameSchema = z
+  .string()
+  .min(3, { message: "Mínimo de 8 caracteres" })
+  .max(30, { message: "Máximo 30 caracteres" });
 const emailSchema = z.string().email({ message: "E-mail inválido" });
 
-const passwordSchema = z
-  .string()
-  .min(8, { message: "Senha deve ter pelo menos 8 caracteres" })
-  .regex(/[A-Z]/, { message: "Senha deve conter uma letra maiúscula" });
+const passwordSchema = z.string().min(8, { message: "Mínimo de 8 caracteres" });
 
 interface ApiResponse {
   message: string;
@@ -22,16 +23,30 @@ interface ApiResponse {
 export function Register() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("user@example.com");
-  const [password, setPassword] = useState<string>("securePassword!");
-  const [name, setName] = useState<string>("John Doe");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const [document, setDocument] = useState<string>("");
   const [typeDocument, setTypeDocument] = useState<string>("CPF");
+  const [nameError, setNameError] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
   const [documentError, setDocumentError] = useState<string>("");
 
-  const { signInByEmail, isAuthenticated, user } = useContext(AuthContext);
+  const { isAuthenticated, registerNewUser } = useContext(AuthContext);
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value;
+    setName(newName);
+    try {
+      nameSchema.parse(newName);
+      setNameError("");
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setNameError(error.errors[0].message);
+      }
+    }
+  };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
@@ -66,6 +81,18 @@ export function Register() {
     let valid = true;
 
     try {
+      nameSchema.parse(name);
+      setNameError("");
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setNameError(
+          error.errors.find((e) => e.path.includes("name"))?.message ||
+            "Nome inválido"
+        );
+      }
+      valid = false;
+    }
+    try {
       emailSchema.parse(email);
       setEmailError("");
     } catch (error) {
@@ -98,19 +125,17 @@ export function Register() {
     }
 
     if (valid) {
-      const payload = {
-        email,
-        password,
-        name,
-        type: "client",
-        typeDocument,
-        document,
-      };
       try {
-        console.log(payload);
-        const response = await api.post("/auth/register-new-client", payload);
-        console.log(response.data);
-        // navigate("/login");
+        const type = "client"
+        registerNewUser(
+          email,
+          password,
+          name,
+          type,
+          typeDocument,
+          document,
+        );
+        navigate("/home");
       } catch (error) {
         if (error instanceof Error) {
           const axiosError = error as { response?: { data?: ApiResponse } };
@@ -136,56 +161,75 @@ export function Register() {
 
   return (
     <main className="flex min-h-screen w-full justify-between items-center bg-[#FFFFFF]">
-      <div className="flex flex-row h-full gap-4 items-center justify-center bg-white w-full">
+      <div className="flex flex-row h-full items-center justify-center bg-white w-full">
         <div className="flex lg:w-1/2 justify-center items-center">
           <div className="p-10 rounded-md sm:border">
-            <div className=" text-center text-xl lg:text-2xl font-bold">
+            <div className="text-center text-xl lg:text-2xl font-bold">
               Preencha o Formulário
             </div>
-            <div className="mt-3 text-sm">
+            <div className="mt-3 text-sm text-center italic">
               Por favor preencha todos os campos.
             </div>
-            <form className="flex flex-col gap-2 items-start justify-start mt-6">
+            <form className="grid grid-cols-2 gap-2 items-center justify-start mt-3">
+              <label className="text-sm w-auto">Nome:</label>
+              <div>
+                <input
+                  name="name"
+                  className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
+                  type="text"
+                  value={name}
+                  onChange={handleNameChange}
+                />
+                {nameError && (
+                  <div className="text-xs text-red-500">{nameError}</div>
+                )}
+              </div>
+
               <label className="text-sm w-auto">E-mail:</label>
-              <input
-                name="email"
-                className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
-                type="email"
-                value={email}
-                onChange={handleEmailChange}
-              />
-              {emailError && (
-                <div className="text-sm text-red-500">{emailError}</div>
-              )}
+
+              <div>
+                <input
+                  name="email"
+                  className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
+                  type="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                />
+                {emailError && (
+                  <div className="text-xs text-red-500">{emailError}</div>
+                )}
+              </div>
 
               <label className="text-sm w-auto">Senha:</label>
-              <div className="relative w-full">
-                <input
-                  name="password"
-                  className="font-light text-left text-sm w-full border px-3 py-2 rounded-md"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={handlePasswordChange}
-                />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                  {showPassword ? (
-                    <IoEyeOutline
-                      onClick={togglePasswordVisibility}
-                      className="cursor-pointer"
-                      size={20}
-                    />
-                  ) : (
-                    <IoEyeOffOutline
-                      onClick={togglePasswordVisibility}
-                      className="cursor-pointer"
-                      size={20}
-                    />
-                  )}
+              <div>
+                <div className="relative w-full">
+                  <input
+                    name="password"
+                    className="font-light text-left text-sm w-full border px-3 py-2 rounded-md"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={handlePasswordChange}
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                    {showPassword ? (
+                      <IoEyeOutline
+                        onClick={togglePasswordVisibility}
+                        className="cursor-pointer"
+                        size={20}
+                      />
+                    ) : (
+                      <IoEyeOffOutline
+                        onClick={togglePasswordVisibility}
+                        className="cursor-pointer"
+                        size={20}
+                      />
+                    )}
+                  </div>
                 </div>
+                {passwordError && (
+                  <div className="text-xs text-red-500">{passwordError}</div>
+                )}
               </div>
-              {passwordError && (
-                <div className="text-sm text-red-500">{passwordError}</div>
-              )}
               <label className="text-sm w-auto">Tipo de Documento:</label>
               <select
                 name="typeDocument"
@@ -199,28 +243,31 @@ export function Register() {
               </select>
 
               <label className="text-sm w-auto">Documento:</label>
-              <InputMask
-                mask={
-                  typeDocument === "CPF"
-                    ? "999.999.999-99"
-                    : "99.999.999/9999-99"
-                }
-                value={document}
-                onChange={(e) => setDocument(e.target.value)}
-                className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
-                required
-              />
-              {documentError && (
-                <div className="text-sm text-red-500">{documentError}</div>
-              )}
-              <button
-                className="cursor-pointer font-semibold mt-1 rounded-lg text-base text-center w-full bg-[#0C346E] text-white hover:opacity-80 py-3"
-                onClick={handleSubmit}
-              >
-                Cadastrar Usuário
-              </button>
+
+              <div>
+                <InputMask
+                  mask={
+                    typeDocument === "CPF"
+                      ? "999.999.999-99"
+                      : "99.999.999/9999-99"
+                  }
+                  value={document}
+                  onChange={(e) => setDocument(e.target.value)}
+                  className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
+                  required
+                />
+                {documentError && (
+                  <div className="text-xs text-red-500">{documentError}</div>
+                )}
+              </div>
             </form>
-            <div className="flex flex-row gap-3 items-center justify-center md:w-full mt-5">
+            <button
+              className="cursor-pointer font-semibold mt-7 rounded-lg text-base text-center w-full bg-[#0C346E] text-white hover:opacity-80 py-3"
+              onClick={handleSubmit}
+            >
+              Cadastrar Usuário
+            </button>
+            <div className="flex flex-row gap-3 items-center justify-center md:w-full mt-3">
               <div className="text-sm ">Já tem conta?</div>
               <div
                 className="text-blue-700 font-semibold text-right text-sm cursor-pointer"
@@ -232,17 +279,13 @@ export function Register() {
           </div>
         </div>
 
-        <div
-          className="hidden lg:flex animate-fadeIn"
-          style={{
-            flex: 1,
-            backgroundImage: "url('public/images/background.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "left",
-            width: "100%",
-            height: "100vh",
-          }}
-        ></div>
+        <div className="hidden lg:flex animate-fadeIn">
+          <img src="public/images/register.png" alt="" style={{
+             width: "100%",
+             height: "80vh",
+             maxHeight: 400
+          }}/>
+        </div>
       </div>
     </main>
   );

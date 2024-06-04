@@ -44,7 +44,7 @@ export const ModalSendEmail = ({
           type="submit"
           className="cursor-pointer mt-5 font-semibold rounded-lg text-base text-center w-full bg-[#0C346E] text-white hover:opacity-80 py-3"
         >
-          Recuperar Senha
+          Resetar Senha
         </button>
       </form>
     </Modal>

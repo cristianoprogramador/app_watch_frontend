@@ -30,6 +30,14 @@ export type AuthContextData = {
     email: string,
     password: string
   ) => Promise<UserDataDto | null>;
+  registerNewUser: (
+    email: string,
+    password: string,
+    name: string,
+    type: string,
+    typeDocument: string,
+    document: string
+  ) => Promise<UserDataDto | null>;
   signInByGoogle: (token: string) => Promise<UserDataDto | null>;
   signOut: () => void;
   user: UserDataDto | null;
@@ -79,6 +87,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     getUserInfos();
   }, []);
+
+  const registerNewUser = async (
+    email: string,
+    password: string,
+    name: string,
+    type: string,
+    typeDocument: string,
+    document: string
+  ): Promise<UserDataDto | null> => {
+    try {
+      const { data } = await api.post<AuthResponseDto>(
+        "/auth/register-new-client",
+        {
+          email,
+          password,
+          name,
+          type,
+          typeDocument,
+          document,
+        }
+      );
+
+      setCookie(null, "auth.token", data.accessToken, {
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        path: "/",
+      });
+
+      localStorage.setItem("user", JSON.stringify(data.userData));
+      setUser(data.userData);
+      return data.userData;
+    } catch (error) {
+      console.error("Login failed", error);
+      return null;
+    }
+  };
 
   const signInByEmail = async (
     email: string,
@@ -152,6 +195,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     <AuthContext.Provider
       value={{
         signInByEmail,
+        registerNewUser,
         signInByGoogle,
         signOut,
         user,

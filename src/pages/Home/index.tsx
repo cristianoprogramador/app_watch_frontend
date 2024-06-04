@@ -89,17 +89,25 @@ export function Home() {
 
   return (
     <div className="p-3">
-      <div className="flex justify-end">
-        <div className="p-3 flex flex-row gap-1 border rounded-md">
+      <div className="flex justify-end gap-5">
+        <div className="p-3 flex flex-row gap-1 border bg-gray-200 rounded-md">
           <div>Total de Projetos :</div>
           <div className="font-semibold text-base">({projectsData?.total})</div>
         </div>
+        <div className="flex justify-center items-center text-center">
+          <Button
+            onClick={handleAddNewSite}
+            className="h-14 w-32 bg-blue-500 hover:bg-blue-700 rounded-lg text-white border flex justify-center items-center text-center cursor-pointer"
+          >
+            Adicionar Site
+          </Button>
+        </div>
       </div>
-      <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="flex flex-wrap gap-6 mt-4 justify-center items-center">
         {projectsData?.websites.map((site: Website) => (
           <div
             key={site.uuid}
-            className="flex flex-col justify-between border rounded-md p-3 m-2 cursor-pointer"
+            className="flex flex-col justify-between w-[400px] border bg-gray-200 rounded-md p-3 m-2 cursor-pointer"
             onClick={() => handleModalInfo(site)}
           >
             <div className="flex flex-row justify-between gap-6">
@@ -125,36 +133,28 @@ export function Home() {
             <div className="flex flex-row justify-between mt-4">
               <div className="flex flex-col gap-1">
                 <div>Rotas Cadastradas</div>
-                <div className="p-4 border rounded-md text-center">
+                <div className="p-4 border border-gray-500 rounded-md text-center">
                   {site.routes.length}
                 </div>
               </div>
               <div className="flex flex-col gap-1">
                 <div>Rotas Funcionando</div>
-                <div className="p-4 border rounded-md text-center">
+                <div className="p-4 border border-gray-500 rounded-md text-center">
                   0 {/* Atualize esta lógica conforme necessário no futuro */}
                 </div>
               </div>
             </div>
           </div>
         ))}
-        <div className=" flex justify-center items-center text-center ">
-          <Button
-            onClick={handleAddNewSite}
-            className="h-14 w-32 bg-blue-500 hover:bg-blue-700 rounded-lg text-white border flex justify-center items-center text-center cursor-pointer"
-          >
-            Adicionar Site
-          </Button>
-        </div>
-
-        <ModalWebsite
-          modalInfo={modalInfo}
-          setModalInfo={setModalInfo}
-          user={user}
-          websiteData={currentWebsite}
-          fetchProjects={fetchProjects}
-        />
       </div>
+
+      <ModalWebsite
+        modalInfo={modalInfo}
+        setModalInfo={setModalInfo}
+        user={user}
+        websiteData={currentWebsite}
+        fetchProjects={fetchProjects}
+      />
     </div>
   );
 }
