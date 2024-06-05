@@ -4,6 +4,7 @@ import { Button } from "../../components/Button";
 import { api } from "../../utils/api";
 import InputMask from "react-input-mask";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 
 interface UserDetailsProps {
   typeDocument: string;
@@ -15,11 +16,6 @@ interface ApiResponse {
   message: string;
 }
 
-const nameSchema = z
-  .string()
-  .min(3, { message: "Mínimo de 8 caracteres" })
-  .max(30, { message: "Máximo 30 caracteres" });
-
 export function Profile() {
   const { user } = useContext(AuthContext);
   const [userData, setUserData] = useState<UserDetailsProps>();
@@ -30,12 +26,17 @@ export function Profile() {
   const [typeDocument, setTypeDocument] = useState("CPF");
 
   const [nameError, setNameError] = useState<string>("");
+  const { t } = useTranslation();
+
+  const nameSchema = z
+    .string()
+    .min(3, { message: t("profile.minNameLength") })
+    .max(30, { message: t("profile.maxNameLength") });
 
   async function fetchUserData() {
     setLoading(true);
     try {
       const response = await api.get(`/userDetails/${user?.userDetails.uuid}`);
-      console.log(response);
       setUserData(response.data);
     } catch (error) {
       console.error(error);
@@ -115,12 +116,12 @@ export function Profile() {
         {!loading ? (
           <div className="w-[90%] px-4">
             <div className="text-center py-5 font-semibold text-xl text-gray-800">
-              Informações de Perfil
+              {t("profile.profileInfo")}
             </div>
             <form>
               <div className="flex flex-col gap-2 py-5">
                 <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg p-4 items-center">
-                  <div>Nome</div>
+                  <div>{t("profile.name")}</div>
                   <div>
                     <input
                       name="name"
@@ -135,11 +136,11 @@ export function Profile() {
                   </div>
                 </div>
                 <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg p-4">
-                  <div>Email</div>
+                  <div>{t("profile.email")}</div>
                   <div>{user?.email}</div>
                 </div>
                 <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg p-4 items-center">
-                  <div>Documento</div>
+                  <div>{t("profile.document")}</div>
                   <select
                     name="typeDocument"
                     className="font-light p-0 text-left text-sm w-36 border px-3 py-2 rounded-md bg-transparent border-gray-400"
@@ -147,12 +148,12 @@ export function Profile() {
                     onChange={(e) => setTypeDocument(e.target.value)}
                     required
                   >
-                    <option value="CPF">CPF</option>
-                    <option value="CNPJ">CNPJ</option>
+                    <option value="CPF">{t("profile.cpf")}</option>
+                    <option value="CNPJ">{t("profile.cnpj")}</option>
                   </select>
                 </div>
                 <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg p-4 items-center">
-                  <div>Nº Documento</div>
+                  <div>{t("profile.docNumber")}</div>
                   <InputMask
                     mask={
                       typeDocument === "CPF"
@@ -169,7 +170,7 @@ export function Profile() {
                   onClick={handleSubmit}
                   className="px-4 py-2 mt-5 bg-green-500 text-white rounded-md hover:bg-green-700"
                 >
-                  Atualizar
+                  {t("profile.update")}
                 </Button>
               </div>
             </form>

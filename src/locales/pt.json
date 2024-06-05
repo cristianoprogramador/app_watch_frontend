@@ -1,0 +1,111 @@
+{
+  "mainLayout": {
+    "welcome": "Bem Vindo ao Dashboard, {{name}}",
+    "overview": "Visão Geral",
+    "settings": "Configurações",
+    "profile": "Perfil"
+  },
+  "home": {
+    "total": "Total de Projetos :",
+    "addSite": "Adicionar Site",
+    "routes": "Rotas Cadastradas",
+    "routesWorking": "Rotas Funcionando"
+  },
+  "modalWebsites": {
+    "areYouSureSite": "Você tem certeza que deseja excluir o site?",
+    "areYouSureRoute": "Você tem certeza que deseja excluir a rota?",
+    "editSite": "Editar Site",
+    "registerSite": "Cadastrar Site",
+    "nameSite": "Nome do Site",
+    "urlSite": "URL do Site",
+    "token": "Token de Autorização (opcional)",
+    "addRoute": "Adicionar Rota",
+    "routes": "Rotas",
+    "addAnotherRoute": "Adicionar outra rota",
+    "removeWebsite": "Excluir Site",
+    "update": "Atualizar",
+    "register": "Cadastrar"
+  },
+  "modalSendEmail": {
+    "resetPassword": "Se o email estiver cadastrado, você receberá um link para redefinir sua senha.",
+    "errorResetPassword": "Erro ao enviar email de redefinição de senha.",
+    "typeEmail": "Digite seu email",
+    "resetPasswordMessage": "Resetar Senha"
+  },
+  "dropdownMenu": {
+    "areYouSure": "Você tem certeza que deseja sair?",
+    "profile": "Perfil",
+    "changePassword": "Alterar Senha",
+    "logout": "Logout"
+  },
+  "login": {
+    "accessAccount": "Acesse sua Conta",
+    "welcomeBack": "Seja bem-vindo, por favor faça login em sua conta.",
+    "email": "E-mail:",
+    "password": "Senha:",
+    "forgotPassword": "Esqueceu sua senha?",
+    "loginButton": "Entrar no Sistema",
+    "or": "ou",
+    "loginWithGoogle": "Entre com Google",
+    "noAccount": "Ainda não tem conta?",
+    "registerNow": "Cadastre-se agora!",
+    "invalidEmail": "E-mail inválido",
+    "passwordMinLength": "Mínimo de 8 caracteres",
+    "passwordUppercase": "Deve conter uma letra maiúscula"
+  },
+  "profile": {
+    "profileInfo": "Informações de Perfil",
+    "name": "Nome",
+    "email": "Email",
+    "document": "Documento",
+    "cpf": "CPF",
+    "cnpj": "CNPJ",
+    "docNumber": "Nº Documento",
+    "update": "Atualizar",
+    "minNameLength": "Mínimo de 3 caracteres",
+    "maxNameLength": "Máximo 30 caracteres",
+    "invalidName": "Nome inválido",
+    "userRegistrationError": "Erro ao registrar usuário: "
+  },
+  "recoverPassword": {
+    "resetPassword": "Redefinir Senha",
+    "newPassword": "Nova senha",
+    "confirmNewPassword": "Confirme a nova senha",
+    "passwordMinLength": "Senha deve ter pelo menos 8 caracteres",
+    "passwordUppercase": "Senha deve conter uma letra maiúscula",
+    "passwordsDoNotMatch": "As senhas não coincidem",
+    "invalidToken": "Token inválido ou expirado",
+    "successMessage": "Senha redefinida com sucesso",
+    "errorMessage": "Erro ao redefinir senha"
+  },
+  "register": {
+    "fillForm": "Preencha o Formulário",
+    "fillAllFields": "Por favor preencha todos os campos.",
+    "name": "Nome:",
+    "email": "E-mail:",
+    "password": "Senha:",
+    "typeDocument": "Tipo de Documento:",
+    "document": "Documento:",
+    "registerUser": "Cadastrar Usuário",
+    "alreadyHaveAccount": "Já tem conta?",
+    "loginNow": "Faça o login agora",
+    "minNameLength": "Mínimo de 3 caracteres",
+    "maxNameLength": "Máximo 30 caracteres",
+    "invalidName": "Nome inválido",
+    "invalidEmail": "E-mail inválido",
+    "passwordMinLength": "Mínimo de 8 caracteres",
+    "emptyDocument": "Documento não pode estar vazio",
+    "userRegistrationError": "Erro ao registrar usuário: "
+  },
+  "settings": {
+    "generalPreferences": "Preferências Gerais",
+    "language": "Idioma",
+    "portuguese": "Português",
+    "english": "Inglês",
+    "display": "Exibição",
+    "lightMode": "Modo Claro",
+    "darkMode": "Modo Escuro",
+    "updateInterval": "Tempo de Atualização",
+    "code": "Código"
+  }
+}

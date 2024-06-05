@@ -5,6 +5,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { ProjectsData, Website } from "../../types/website-routes";
 import io from "socket.io-client";
 import { ModalWebsite } from "../../components/ModalWebsite";
+import { useTranslation } from "react-i18next";
 
 export function Home() {
   const { user } = useContext(AuthContext);
@@ -16,6 +17,7 @@ export function Home() {
   const [totalPerPage, setTotalPerPage] = useState<number>(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [projectsData, setProjectsData] = useState<ProjectsData | null>(null);
+  const { t } = useTranslation();
 
   const getStatusClass = (status: string) => {
     switch (status) {
@@ -90,16 +92,16 @@ export function Home() {
   return (
     <div className="p-3">
       <div className="flex justify-end gap-5">
-        <div className="p-3 flex flex-row gap-1 border bg-gray-200 rounded-md">
-          <div>Total de Projetos :</div>
+        <div className="p-3 flex flex-row gap-1 items-center bg-theme-bg-card rounded-md">
+          <div>{t("home.total")}</div>
           <div className="font-semibold text-base">({projectsData?.total})</div>
         </div>
         <div className="flex justify-center items-center text-center">
           <Button
             onClick={handleAddNewSite}
-            className="h-14 w-32 bg-blue-500 hover:bg-blue-700 rounded-lg text-white border flex justify-center items-center text-center cursor-pointer"
+            className="h-14 w-32 bg-blue-500 hover:bg-blue-700 rounded-lg text-white flex justify-center items-center text-center cursor-pointer"
           >
-            Adicionar Site
+            {t("home.addSite")}
           </Button>
         </div>
       </div>
@@ -107,7 +109,7 @@ export function Home() {
         {projectsData?.websites.map((site: Website) => (
           <div
             key={site.uuid}
-            className="flex flex-col justify-between w-[400px] border bg-gray-200 rounded-md p-3 m-2 cursor-pointer"
+            className="flex flex-col justify-between w-[400px] bg-theme-bg-card rounded-md p-3 m-2 cursor-pointer"
             onClick={() => handleModalInfo(site)}
           >
             <div className="flex flex-row justify-between gap-6">
@@ -132,13 +134,13 @@ export function Home() {
             </div>
             <div className="flex flex-row justify-between mt-4">
               <div className="flex flex-col gap-1">
-                <div>Rotas Cadastradas</div>
+                <div>{t("home.routes")}</div>
                 <div className="p-4 border border-gray-500 rounded-md text-center">
                   {site.routes.length}
                 </div>
               </div>
               <div className="flex flex-col gap-1">
-                <div>Rotas Funcionando</div>
+                <div>{t("home.routesWorking")}</div>
                 <div className="p-4 border border-gray-500 rounded-md text-center">
                   0 {/* Atualize esta lógica conforme necessário no futuro */}
                 </div>

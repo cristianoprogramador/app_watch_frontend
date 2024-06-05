@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import { FaUser, FaKey, FaSignOutAlt } from "react-icons/fa";
 import { ModalSendEmail } from "../ModalSendEmail";
+import { useTranslation } from "react-i18next";
 
 interface DropdownMenuProps {}
 
@@ -13,6 +14,7 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { signOut, user } = React.useContext(AuthContext);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -42,17 +44,17 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = () => {
   };
 
   const handleLogout = () => {
-    const confirmDelete = window.confirm(
-      "Você tem certeza que deseja excluir o site?"
-    );
+    const confirmDelete = window.confirm(t("dropdownMenu.areYouSure"));
     if (!confirmDelete) return;
     signOut();
-  }
+  };
 
   return (
     <div className="relative" ref={dropdownRef}>
       <img
-        src={user?.userDetails.profileImageUrl || "public/images/user-profile.png"}
+        src={
+          user?.userDetails.profileImageUrl || "public/images/user-profile.png"
+        }
         alt="Profile"
         className="w-8 h-8 rounded-full bg-contain cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
@@ -81,21 +83,21 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = () => {
               onClick={() => handleNavigate("/profile")}
             >
               <FaUser className="mr-2" />
-              Perfil
+              {t("dropdownMenu.profile")}
             </div>
             <div
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
               onClick={handleModalInfo}
             >
               <FaKey className="mr-2" />
-              Alterar Senha
+              {t("dropdownMenu.changePassword")}
             </div>
             <div
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
               onClick={handleLogout}
             >
               <FaSignOutAlt className="mr-2" />
-              Logout
+              {t("dropdownMenu.logout")}
             </div>
           </div>
         </div>

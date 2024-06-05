@@ -5,11 +5,7 @@ import { z } from "zod";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { api } from "../../utils/api";
-
-const passwordSchema = z
-  .string()
-  .min(8, { message: "Senha deve ter pelo menos 8 caracteres" })
-  .regex(/[A-Z]/, { message: "Senha deve conter uma letra maiúscula" });
+import { useTranslation } from "react-i18next";
 
 export function RecoverPassword() {
   const navigate = useNavigate();
@@ -21,8 +17,14 @@ export function RecoverPassword() {
   const [passwordConfirmError, setPasswordConfirmError] = useState<string>("");
   const [showPasswordConfirm, setShowPasswordConfirm] =
     useState<boolean>(false);
+  const { t } = useTranslation();
 
   const token = new URLSearchParams(location.search).get("token");
+
+  const passwordSchema = z
+    .string()
+    .min(8, { message: t("recoverPassword.passwordMinLength") })
+    .regex(/[A-Z]/, { message: t("recoverPassword.passwordUppercase") });
 
   useEffect(() => {
     if (!token) {
@@ -34,7 +36,7 @@ export function RecoverPassword() {
     event.preventDefault();
 
     if (!token) {
-      alert("Token inválido ou expirado");
+      alert(t("recoverPassword.invalidToken"));
       return;
     }
 
@@ -49,7 +51,7 @@ export function RecoverPassword() {
     }
 
     if (password !== confirmPassword) {
-      setPasswordConfirmError("As senhas não coincidem");
+      setPasswordConfirmError(t("recoverPassword.passwordsDoNotMatch"));
       return;
     } else {
       setPasswordConfirmError("");
@@ -64,14 +66,14 @@ export function RecoverPassword() {
       console.log(response);
 
       if (response.status === 201) {
-        alert("Senha redefinida com sucesso");
+        alert(t("recoverPassword.successMessage"));
         navigate("/login");
       } else {
-        alert("Erro ao redefinir senha");
+        alert(t("recoverPassword.errorMessage"));
       }
     } catch (error) {
       console.error("Erro ao redefinir senha:", error);
-      alert("Erro ao redefinir senha.");
+      alert(t("recoverPassword.errorMessage"));
     }
   };
 
@@ -102,7 +104,7 @@ export function RecoverPassword() {
     const newPassword = e.target.value;
     setConfirmPassword(newPassword);
     if (newPassword !== password) {
-      setPasswordConfirmError("As senhas não coincidem");
+      setPasswordConfirmError(t("recoverPassword.passwordsDoNotMatch"));
     } else {
       setPasswordConfirmError("");
     }
@@ -114,7 +116,7 @@ export function RecoverPassword() {
         <div className="flex lg:w-1/2 justify-center items-center">
           <div className="p-10 rounded-md sm:border">
             <div className=" text-center text-xl lg:text-2xl font-bold">
-              Redefine sua senha
+              {t("recoverPassword.resetPassword")}
             </div>
             <form
               onSubmit={handleSubmit}
@@ -123,7 +125,7 @@ export function RecoverPassword() {
               <div className="relative w-full">
                 <input
                   name="password"
-                  placeholder="Nova senha"
+                  placeholder={t("recoverPassword.newPassword")}
                   className="font-light text-left text-sm w-full border px-3 py-2 rounded-md"
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -150,8 +152,8 @@ export function RecoverPassword() {
               </div>
               <div className="relative w-full">
                 <input
-                  name="password"
-                  placeholder="Confirme a nova senha"
+                  name="confirmPassword"
+                  placeholder={t("recoverPassword.confirmNewPassword")}
                   className="font-light text-left text-sm w-full border px-3 py-2 rounded-md"
                   type={showPasswordConfirm ? "text" : "password"}
                   value={confirmPassword}
@@ -182,7 +184,7 @@ export function RecoverPassword() {
                 type="submit"
                 className="cursor-pointer font-semibold mt-1 rounded-lg text-base text-center w-full bg-[#0C346E] text-white hover:opacity-80 py-3"
               >
-                Redefinir Senha
+                {t("recoverPassword.resetPassword")}
               </button>
             </form>
           </div>

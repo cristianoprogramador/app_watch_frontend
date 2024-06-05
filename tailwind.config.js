@@ -7,7 +7,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        'sidebar-bg': 'var(--sidebar-bg)',
+        'theme-sidebar-bg': 'var(--sidebar-bg)',
+        'theme-bg': 'var(--bg)',
+        'theme-text-color': 'var(--text-color)',
+        'theme-bg-card': 'var(--bg-card)',
       }
     },
   },

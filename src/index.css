@@ -11,7 +11,30 @@
   -webkit-font-smoothing: antialiased;
 
   --sidebar-bg-light: #1e40af;
-  --sidebar-bg-dark: #162b67;
+  --sidebar-bg-dark: #1e293b;
+
+  --bg-light: #f3f4f6;
+  --bg-dark: #0f172a;
+
+  --text-light: #000000;
+  --text-dark: #ffffff;
+
+  --bg-card-light: #e5e7eb;
+  --bg-card-dark: #d7dadf;
+}
+
+.light {
+  --sidebar-bg: var(--sidebar-bg-light);
+  --bg: var(--bg-light);
+  --text-bg: var(--text-light);
+  --bg-card: var(--bg-card-light);
+}
+
+.dark {
+  --sidebar-bg: var(--sidebar-bg-dark);
+  --bg: var(--bg-dark);
+  --text-color: var(--text-dark);
+  --bg-card: var(--bg-card-dark);
 }
 
 @keyframes marquee {
@@ -40,12 +63,4 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-}
-
-.light {
-  --sidebar-bg: var(--sidebar-bg-light);
-}
-
-.dark {
-  --sidebar-bg: var(--sidebar-bg-dark);
 }

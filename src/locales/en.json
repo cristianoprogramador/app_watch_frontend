@@ -1,0 +1,111 @@
+{
+  "mainLayout": {
+    "welcome": "Welcome to the Dashboard, {{name}}",
+    "overview": "Overview",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "home": {
+    "total": "Total Projects:",
+    "addSite": "Add Site",
+    "routes": "Registered Routes",
+    "routesWorking": "Working Routes"
+  },
+  "modalWebsites": {
+    "areYouSureSite": "Are you sure you want to delete the site?",
+    "areYouSureRoute": "Are you sure you want to delete the route?",
+    "editSite": "Edit Site",
+    "registerSite": "Register Site",
+    "nameSite": "Site Name",
+    "urlSite": "Site URL",
+    "token": "Authorization Token (optional)",
+    "addRoute": "Add Route",
+    "routes": "Routes",
+    "addAnotherRoute": "Add another route",
+    "removeWebsite": "Delete Site",
+    "update": "Update",
+    "register": "Register"
+  },
+  "modalSendEmail": {
+    "resetPassword": "If the email is registered, you will receive a link to reset your password.",
+    "errorResetPassword": "Error sending password reset email.",
+    "typeEmail": "Enter your email",
+    "resetPasswordMessage": "Reset Password"
+  },
+  "dropdownMenu": {
+    "areYouSure": "Are you sure you want to log out?",
+    "profile": "Profile",
+    "changePassword": "Change Password",
+    "logout": "Logout"
+  },
+  "login": {
+    "accessAccount": "Access Your Account",
+    "welcomeBack": "Welcome back, please log in to your account.",
+    "email": "Email:",
+    "password": "Password:",
+    "forgotPassword": "Forgot your password?",
+    "loginButton": "Log In",
+    "or": "or",
+    "loginWithGoogle": "Log in with Google",
+    "noAccount": "Don't have an account?",
+    "registerNow": "Register now!",
+    "invalidEmail": "Invalid email",
+    "passwordMinLength": "Minimum of 8 characters",
+    "passwordUppercase": "Must contain an uppercase letter"
+  },
+  "profile": {
+    "profileInfo": "Profile Information",
+    "name": "Name",
+    "email": "Email",
+    "document": "Document",
+    "cpf": "CPF",
+    "cnpj": "CNPJ",
+    "docNumber": "Document Number",
+    "update": "Update",
+    "minNameLength": "Minimum of 3 characters",
+    "maxNameLength": "Maximum of 30 characters",
+    "invalidName": "Invalid name",
+    "userRegistrationError": "Error registering user: "
+  },
+  "recoverPassword": {
+    "resetPassword": "Reset Password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "passwordMinLength": "Password must be at least 8 characters",
+    "passwordUppercase": "Password must contain an uppercase letter",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "invalidToken": "Invalid or expired token",
+    "successMessage": "Password reset successfully",
+    "errorMessage": "Error resetting password"
+  },
+  "register": {
+    "fillForm": "Fill the Form",
+    "fillAllFields": "Please fill in all fields.",
+    "name": "Name:",
+    "email": "Email:",
+    "password": "Password:",
+    "typeDocument": "Document Type:",
+    "document": "Document:",
+    "registerUser": "Register User",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginNow": "Log in now",
+    "minNameLength": "Minimum of 3 characters",
+    "maxNameLength": "Maximum of 30 characters",
+    "invalidName": "Invalid name",
+    "invalidEmail": "Invalid email",
+    "passwordMinLength": "Minimum of 8 characters",
+    "emptyDocument": "Document cannot be empty",
+    "userRegistrationError": "Error registering user: "
+  },
+  "settings": {
+    "generalPreferences": "General Preferences",
+    "language": "Language",
+    "portuguese": "Portuguese",
+    "english": "English",
+    "display": "Display",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode",
+    "updateInterval": "Update Interval",
+    "code": "Code"
+  }
+}

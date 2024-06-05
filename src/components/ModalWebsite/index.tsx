@@ -8,6 +8,7 @@ import { api } from "../../utils/api";
 import { Button } from "../Button";
 import { UserDataDto } from "../../contexts/AuthContext";
 import { Website } from "../../types/website-routes";
+import { useTranslation } from "react-i18next";
 
 interface Route {
   method: string;
@@ -38,6 +39,7 @@ export const ModalWebsite = ({
   const [routes, setRoutes] = useState<Route[]>(
     isEditing ? websiteData.routes : []
   );
+  const { t } = useTranslation();
 
   const handleAddRoute = () => {
     setRoutes([...routes, { method: "GET", route: "", body: "", uuid: "" }]);
@@ -47,9 +49,7 @@ export const ModalWebsite = ({
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
-    const confirmDelete = window.confirm(
-      "Você tem certeza que deseja excluir o site?"
-    );
+    const confirmDelete = window.confirm(t("modalWebsites.areYouSureSite"));
     if (!confirmDelete) return;
     try {
       await api.delete(`/website-monitoring/${websiteData?.uuid}`);
@@ -99,9 +99,7 @@ export const ModalWebsite = ({
   };
 
   const handleDeleteRoute = async (routeId: string) => {
-    const confirmDelete = window.confirm(
-      "Você tem certeza que deseja excluir a rota?"
-    );
+    const confirmDelete = window.confirm(t("modalWebsites.areYouSureRoute"));
     if (!confirmDelete) return;
     try {
       const response = await api.delete(
@@ -138,12 +136,16 @@ export const ModalWebsite = ({
     <Modal isOpen={modalInfo} setIsOpen={setModalInfo}>
       <ModalHeader
         onClose={() => setModalInfo(false)}
-        title={isEditing ? "Editar Site" : "Cadastrar Site"}
+        title={
+          isEditing
+            ? t("modalWebsites.editSite")
+            : t("modalWebsites.registerSite")
+        }
       />
       <form onSubmit={handleSubmit} className="space-y-4 p-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Nome do Site
+            {t("modalWebsites.nameSite")}
           </label>
           <input
             type="text"
@@ -155,7 +157,7 @@ export const ModalWebsite = ({
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            URL do Site
+            {t("modalWebsites.urlSite")}
           </label>
           <input
             type="url"
@@ -167,7 +169,7 @@ export const ModalWebsite = ({
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Token de Autorização (opcional)
+            {t("modalWebsites.token")}
           </label>
           <input
             type="text"
@@ -182,12 +184,12 @@ export const ModalWebsite = ({
               onClick={handleAddRoute}
               className="my-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
             >
-              Adicionar Rota
+              {t("modalWebsites.addRoute")}
             </Button>
           )}
           {routes.length > 0 && (
             <label className="block text-sm font-medium text-gray-700">
-              Rotas
+              {t("modalWebsites.routes")}
             </label>
           )}
           {routes.map((route, index) => (
@@ -256,7 +258,7 @@ export const ModalWebsite = ({
               onClick={handleAddRoute}
               className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
             >
-              Adicionar outra rota
+              {t("modalWebsites.addAnotherRoute")}
             </Button>
           )}
         </div>
@@ -266,14 +268,16 @@ export const ModalWebsite = ({
               onClick={handleDeleteWebsites}
               className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700"
             >
-              Excluir Site
+              {t("modalWebsites.removeWebsite")}
             </Button>
           )}
           <Button
             type="submit"
             className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700"
           >
-            {websiteData !== null ? "Atualizar" : "Cadastrar"}
+            {websiteData !== null
+              ? t("modalWebsites.update")
+              : t("modalWebsites.register")}
           </Button>
         </div>
       </form>
