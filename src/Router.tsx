@@ -14,9 +14,11 @@ import { Profile } from "./pages/Profile";
 import { AuthContext } from "./contexts/AuthContext";
 import { Register } from "./pages/Register";
 import { RecoverPassword } from "./pages/RecoverPassword";
+import { ErrorLogs } from "./pages/ErrorLogs";
+import { Users } from "./pages/Users";
 
 function PrivateRoute() {
-  const { user, isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated } = useContext(AuthContext);
 
   return isAuthenticated ? (
     <MainLayout>
@@ -24,6 +26,24 @@ function PrivateRoute() {
     </MainLayout>
   ) : (
     <Navigate to="/login" replace />
+  );
+}
+
+function AdminRoute() {
+  const { user, isAuthenticated } = useContext(AuthContext);
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user?.type !== "admin") {
+    return <Navigate to="/home" replace />;
+  }
+
+  return (
+    <MainLayout>
+      <Outlet />
+    </MainLayout>
   );
 }
 
@@ -39,6 +59,10 @@ export function ProjectRoutes() {
             <Route path="/home" element={<Home />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/profile" element={<Profile />} />
+          </Route>
+          <Route element={<AdminRoute />}>
+            <Route path="/errorLogs" element={<ErrorLogs />} />
+            <Route path="/users" element={<Users />} />
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

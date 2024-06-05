@@ -157,10 +157,10 @@ export function Register() {
   }, [isAuthenticated, navigate]);
 
   return (
-    <main className="flex min-h-screen w-full justify-between items-center bg-[#FFFFFF]">
-      <div className="flex flex-row h-full items-center justify-center bg-white w-full">
+    <main className="flex min-h-screen w-full justify-between items-center bg-theme-bg">
+      <div className="flex flex-row h-full items-center justify-center bg-theme-bg w-full">
         <div className="flex lg:w-1/2 justify-center items-center">
-          <div className="p-10 rounded-md sm:border">
+          <div className="p-10 rounded-md sm:border bg-white">
             <div className="text-center text-xl lg:text-2xl font-bold">
               {t("register.fillForm")}
             </div>

@@ -51,6 +51,26 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           >
             {t("mainLayout.profile")}
           </li>
+          {user?.type === "admin" && (
+            <>
+              <li
+                className={`p-4 hover:bg-blue-700 cursor-pointer ${
+                  isActive("/errorLogs") && "bg-blue-900"
+                }`}
+                onClick={() => navigate("/errorLogs")}
+              >
+                {t("mainLayout.errorLogs")}
+              </li>
+              <li
+                className={`p-4 hover:bg-blue-700 cursor-pointer ${
+                  isActive("/users") && "bg-blue-900"
+                }`}
+                onClick={() => navigate("/users")}
+              >
+                {t("mainLayout.users")}
+              </li>
+            </>
+          )}
         </ul>
       </div>
 

@@ -3,7 +3,9 @@
     "welcome": "Welcome to the Dashboard, {{name}}",
     "overview": "Overview",
     "settings": "Settings",
-    "profile": "Profile"
+    "profile": "Profile",
+    "errorLogs": "Error Logs",
+    "users": "Users"
   },
   "home": {
     "total": "Total Projects:",
@@ -107,5 +109,37 @@
     "darkMode": "Dark Mode",
     "updateInterval": "Update Interval",
     "code": "Code"
+  },
+  "errorLogs": {
+    "title": "Error Logs",
+    "statusCode": "Status Code",
+    "error": "Error",
+    "message": "Message",
+    "url": "URL",
+    "method": "Method",
+    "createdAt": "Created At",
+    "loading": "Loading",
+    "total": "Total",
+    "itemsPerPage": "Items per page",
+    "previous": "Previous",
+    "next": "Next",
+    "searchPlaceholder": "Type here and click Search",
+    "searchButton": "Search"
+  },
+  "users": {
+    "title": "Users",
+    "uuid": "UUID",
+    "email": "Email",
+    "type": "Type",
+    "disabled": "Disabled",
+    "createdAt": "Created At",
+    "total": "Total",
+    "itemsPerPage": "Items per page",
+    "previous": "Previous",
+    "next": "Next",
+    "searchPlaceholder": "Type here and click Search",
+    "searchButton": "Search",
+    "disabledYes": "Yes",
+    "disabledNo": "No"
   }
 }

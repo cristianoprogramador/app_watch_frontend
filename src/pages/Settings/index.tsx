@@ -52,7 +52,7 @@ export function Settings() {
             <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg p-4">
               <div>{t("settings.language")}</div>
               <select
-                className="bg-transparent"
+                className="bg-transparent text-center"
                 onChange={handleLanguageChange}
                 value={language}
               >
@@ -63,7 +63,7 @@ export function Settings() {
             <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg p-4">
               <div>{t("settings.display")}</div>
               <select
-                className="bg-transparent"
+                className="bg-transparent text-center"
                 onChange={handleThemeChange}
                 value={theme}
               >

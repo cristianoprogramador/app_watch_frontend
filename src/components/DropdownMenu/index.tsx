@@ -56,21 +56,20 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = () => {
           user?.userDetails.profileImageUrl || "public/images/user-profile.png"
         }
         alt="Profile"
-        className="w-8 h-8 rounded-full bg-contain cursor-pointer"
+        className="w-8 h-8 rounded-full object-cover cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       />
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
-          <div className="bg-gray-300 h-14 relative">
-            <div className="flex items-center justify-center">
+      <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
+        <div className="bg-gray-300 h-14 relative">
+          <div className="flex items-center justify-center">
+            <div className="w-14 h-14 rounded-full overflow-hidden relative mt-3">
               <img
-                src={
-                  user?.userDetails.profileImageUrl ||
-                  "public/images/user-profile.png"
-                }
+                src={user?.userDetails.profileImageUrl || "public/images/user-profile.png"}
                 alt="ProfileBig"
-                className="w-14 h-14 rounded-full bg-contain cursor-pointer relative mt-3"
+                className="object-cover w-full h-full"
               />
+            </div>
             </div>
           </div>
           <div className="mt-4 flex flex-col items-center justify-center ">

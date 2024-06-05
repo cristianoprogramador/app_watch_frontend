@@ -111,10 +111,10 @@ export function RecoverPassword() {
   };
 
   return (
-    <main className="flex min-h-screen w-full justify-between items-center bg-[#FFFFFF]">
-      <div className="flex flex-row h-full gap-4 items-center justify-center bg-white w-full">
+    <main className="flex min-h-screen w-full justify-between items-center bg-theme-bg">
+      <div className="flex flex-row h-full gap-4 items-center justify-center bg-theme-bg w-full">
         <div className="flex lg:w-1/2 justify-center items-center">
-          <div className="p-10 rounded-md sm:border">
+          <div className="p-10 rounded-md sm:border bg-white min-w-[320px]">
             <div className=" text-center text-xl lg:text-2xl font-bold">
               {t("recoverPassword.resetPassword")}
             </div>
@@ -190,17 +190,9 @@ export function RecoverPassword() {
           </div>
         </div>
 
-        <div
-          className="hidden lg:flex animate-fadeIn"
-          style={{
-            flex: 1,
-            backgroundImage: "url('public/images/background.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "left",
-            width: "100%",
-            height: "100vh",
-          }}
-        ></div>
+        <div className="hidden lg:flex animate-fadeIn">
+          <img src="public/images/login.png" alt="" />
+        </div>
       </div>
     </main>
   );

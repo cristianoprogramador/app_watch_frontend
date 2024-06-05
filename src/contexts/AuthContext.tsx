@@ -4,6 +4,7 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 
 import { parseCookies, destroyCookie, setCookie } from "nookies";
 import { api } from "../utils/api";
+import axios from "axios";
 
 export type UserDataDto = {
   uuid: string;
@@ -142,7 +143,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(data.userData);
       return data.userData;
     } catch (error) {
-      console.error("Login failed", error);
+      if (axios.isAxiosError(error)) {
+        console.error("Login failed", error);
+        alert(error.response?.data?.message || "An unknown error occurred");
+      } else {
+        console.error("Login failed", error);
+        alert("An unknown error occurred");
+      }
       return null;
     }
   };
@@ -162,7 +169,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(data.userData);
       return data.userData;
     } catch (error) {
-      console.error("Google login failed", error);
+      if (axios.isAxiosError(error)) {
+        console.error("Login failed", error);
+        alert(error.response?.data?.message || "An unknown error occurred");
+      } else {
+        console.error("Login failed", error);
+        alert("An unknown error occurred");
+      }
       return null;
     }
   };
