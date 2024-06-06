@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api } from "../../utils/api";
+import { GrDocumentExcel } from "react-icons/gr";
+import * as XLSX from "xlsx";
 
 interface ErrorLog {
   uuid: string;
@@ -14,7 +15,6 @@ interface ErrorLog {
 }
 
 export function ErrorLogs() {
-  const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [errorLogs, setErrorLogs] = useState<ErrorLog[]>([]);
 
@@ -43,7 +43,12 @@ export function ErrorLogs() {
     }
   }
 
-  console.log(errorLogs);
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(errorLogs);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Error Logs");
+    XLSX.writeFile(workbook, "error_logs.xlsx");
+  };
 
   const totalPages = Math.ceil(totalLogs / totalPerPage);
 
@@ -57,43 +62,59 @@ export function ErrorLogs() {
   }, [actualPage, totalPerPage, searchQuery]);
 
   return (
-    <div className="flex flex-col justify-center gap-10 items-center h-full">
+    <div className="flex flex-col justify-center items-center h-full">
       <div className="w-[90%] bg-gray-200 flex flex-col justify-center items-center border rounded-lg h-[80%]">
         {!loading ? (
           <div className="px-4 h-full w-full flex flex-col">
             <div className="text-center py-5 font-semibold text-xl text-gray-800">
-            {t("errorLogs.title")}
+              {t("errorLogs.title")}
             </div>
-            <div className="mb-4 flex items-center justify-start w-full">
-              <input
-                type="text"
-                placeholder={t("errorLogs.searchPlaceholder")}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md"
-              />
-              <button
-                onClick={handleSearch}
-                className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
-              >
-                {t("errorLogs.searchButton")}
-              </button>
+            <div className="mb-4 flex items-center justify-between w-full">
+              <div className="flex flex-row gap-2 min-w-96">
+                <input
+                  type="text"
+                  placeholder={t("errorLogs.searchPlaceholder")}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="border border-gray-300 rounded-md px-4 py-2 w-full min-w-md"
+                />
+                <button
+                  onClick={handleSearch}
+                  className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
+                >
+                  {t("errorLogs.searchButton")}
+                </button>
+              </div>
+              <div className="mr-5 flex flex-row gap-2">
+                <GrDocumentExcel
+                  size={30}
+                  color="darkblue"
+                  className="cursor-pointer hover:opacity-60"
+                  onClick={exportToExcel}
+                />
+              </div>
             </div>
             <div className="overflow-y-auto flex-1 w-full border rounded-md">
-              <table className="min-w-full divide-y  divide-gray-200 ">
+              <table className="divide-y divide-gray-200">
                 <thead className="bg-gray-50 sticky top-0">
                   <tr className="text-xs text-center font-medium text-gray-500 uppercase">
-                    <th className="px-6 py-3">{t("errorLogs.statusCode")}</th>
-                    <th className="px-6 py-3">{t("errorLogs.error")}</th>
-                    <th className="px-6 py-3">{t("errorLogs.message")}</th>
-                    <th className="px-6 py-3">{t("errorLogs.url")}</th>
-                    <th className="px-6 py-3">{t("errorLogs.method")}</th>
-                    <th className="px-6 py-3">{t("errorLogs.createdAt")}</th>
+                    <th className="lg:px-6 lg:py-3">
+                      {t("errorLogs.statusCode")}
+                    </th>
+                    <th className="lg:px-6 lg:py-3">{t("errorLogs.error")}</th>
+                    <th className="lg:px-6 lg:py-3">
+                      {t("errorLogs.message")}
+                    </th>
+                    <th className="lg:px-6 lg:py-3">{t("errorLogs.url")}</th>
+                    <th className="lg:px-6 lg:py-3">{t("errorLogs.method")}</th>
+                    <th className="lg:px-6 lg:py-3">
+                      {t("errorLogs.createdAt")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {errorLogs.map((log) => (
-                    <tr key={log.uuid} className="text-sm text-center">
+                    <tr key={log.uuid} className="text-xs text-center">
                       <td>{log.statusCode}</td>
                       <td>{log.error}</td>
                       <td>

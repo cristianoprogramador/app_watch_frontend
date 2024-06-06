@@ -6,6 +6,7 @@ import { ProjectsData, Website } from "../../types/website-routes";
 import io from "socket.io-client";
 import { ModalWebsite } from "../../components/ModalWebsite";
 import { useTranslation } from "react-i18next";
+import { RxUpdate } from "react-icons/rx";
 
 export function Home() {
   const { user } = useContext(AuthContext);
@@ -21,9 +22,9 @@ export function Home() {
 
   const getStatusClass = (status: string) => {
     switch (status) {
-      case "Online":
+      case "online":
         return "border-green-600 text-green-600 hover:bg-green-200";
-      case "Offline":
+      case "offline":
         return "border-red-600 text-red-600 hover:bg-red-200";
       case "Warning":
         return "border-yellow-600 text-yellow-600 hover:bg-yellow-200";
@@ -57,7 +58,29 @@ export function Home() {
     }
   }
 
-  const updateSiteStatus = (update: { siteUuid: string; status: string }) => {
+  const handleUpdateSiteStatus = async (
+    siteId: string,
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation();
+    try {
+      await api.post(`/website-monitoring/update-status/${siteId}`);
+      fetchProjects();
+    } catch (error) {
+      console.error("Failed to update site status", error);
+    }
+  };
+
+  const updateSiteStatus = (update: {
+    siteUuid: string;
+    status: string;
+    routes: Array<{
+      routeId: string;
+      route: string;
+      status: string;
+      response: string;
+    }>;
+  }) => {
     setProjectsData((currentData) => {
       if (!currentData) return null;
       const updatedWebsites = currentData.websites.map((site) => {
@@ -68,6 +91,21 @@ export function Home() {
               ...site.siteStatus,
               status: update.status,
             },
+            routes: site.routes.map((route) => {
+              const updatedRoute = update.routes.find(
+                (r) => r.routeId === route.uuid
+              );
+              if (updatedRoute) {
+                return {
+                  ...route,
+                  routeStatus: {
+                    status: updatedRoute.status,
+                    response: updatedRoute.response,
+                  },
+                };
+              }
+              return route;
+            }),
           };
         }
         return site;
@@ -114,7 +152,15 @@ export function Home() {
           >
             <div className="flex flex-row justify-between gap-6">
               <div className="flex flex-col gap-1">
-                <div>{site.name}</div>
+                <div className="flex flex-row gap-2">
+                  <div
+                    className="cursor-pointer hover:opacity-65"
+                    onClick={(e) => handleUpdateSiteStatus(site.uuid, e)}
+                  >
+                    <RxUpdate size={20} />
+                  </div>
+                  <div>{site.name}</div>
+                </div>
                 <a
                   className="italic hover:text-blue-700"
                   href={site.url}
@@ -126,7 +172,7 @@ export function Home() {
               </div>
               <div
                 className={`p-2 border ${getStatusClass(
-                  "Online"
+                  site.siteStatus.status
                 )} flex text-center items-center h-10 rounded-md cursor-pointer`}
               >
                 {site.siteStatus.status}
@@ -142,7 +188,11 @@ export function Home() {
               <div className="flex flex-col gap-1">
                 <div>{t("home.routesWorking")}</div>
                 <div className="p-4 border border-gray-500 rounded-md text-center">
-                  0 {/* Atualize esta lógica conforme necessário no futuro */}
+                  {
+                    site.routes.filter(
+                      (route) => route.routeStatus?.status === "success"
+                    ).length
+                  }
                 </div>
               </div>
             </div>

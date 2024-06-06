@@ -71,10 +71,10 @@ export function Settings() {
                 <option value="dark">{t("settings.darkMode")}</option>
               </select>
             </div>
-            <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg p-4">
+            {/* <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg p-4">
               <div>{t("settings.updateInterval")}</div>
               <div>30 Minutos</div>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="w-[90%] px-4">

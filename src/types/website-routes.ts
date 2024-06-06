@@ -1,6 +1,13 @@
 // src/types/website-routes.ts
 
+export interface RouteStatus {
+  uuid?: string;
+  status: string;
+  response: string
+}
+
 export interface Route {
+  routeStatus: RouteStatus;
   uuid: string;
   method: string;
   route: string;

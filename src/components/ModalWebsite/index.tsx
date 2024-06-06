@@ -9,12 +9,15 @@ import { Button } from "../Button";
 import { UserDataDto } from "../../contexts/AuthContext";
 import { Website } from "../../types/website-routes";
 import { useTranslation } from "react-i18next";
+import { IoIosCheckmarkCircleOutline } from "react-icons/io";
+import { MdOutlineErrorOutline } from "react-icons/md";
 
 interface Route {
   method: string;
   route: string;
   body: string;
   uuid: string;
+  status?: string;
 }
 
 interface ModalWebsiteProps {
@@ -92,10 +95,18 @@ export const ModalWebsite = ({
         userId: user?.uuid,
       });
       fetchProjects();
+      resetForm();
       setModalInfo(false);
     } catch (error) {
       console.error("Error saving the website:", error);
     }
+  };
+
+  const resetForm = () => {
+    setSiteName("");
+    setSiteUrl("");
+    setToken("");
+    setRoutes([]);
   };
 
   const handleDeleteRoute = async (routeId: string) => {
@@ -125,10 +136,7 @@ export const ModalWebsite = ({
       setToken(websiteData.token || "");
       setRoutes(websiteData.routes || []);
     } else {
-      setSiteName("");
-      setSiteUrl("");
-      setToken("");
-      setRoutes([]);
+      resetForm();
     }
   }, [websiteData]);
 
@@ -217,6 +225,7 @@ export const ModalWebsite = ({
                   placeholder={`Rota ${index + 1}`}
                 />
                 {websiteData !== null ? (
+                  <>
                   <button
                     type="button"
                     onClick={() => handleDeleteRoute(route.uuid)}
@@ -224,6 +233,14 @@ export const ModalWebsite = ({
                   >
                     <FaRegTrashAlt />
                   </button>
+                  <div>
+                    {route.status === "success" ? (
+                      <IoIosCheckmarkCircleOutline color="green" size={20} />
+                    ) : (
+                      <MdOutlineErrorOutline color="red" size={20} />
+                    )}
+                  </div>
+                </>
                 ) : (
                   <button
                     type="button"
