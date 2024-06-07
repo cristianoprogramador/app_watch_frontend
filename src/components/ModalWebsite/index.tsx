@@ -11,6 +11,7 @@ import { Website } from "../../types/website-routes";
 import { useTranslation } from "react-i18next";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { MdOutlineErrorOutline } from "react-icons/md";
+import { Tooltip } from "react-tooltip";
 
 interface Route {
   method: string;
@@ -18,6 +19,7 @@ interface Route {
   body: string;
   uuid: string;
   status?: string;
+  response?: string;
 }
 
 interface ModalWebsiteProps {
@@ -226,21 +228,28 @@ export const ModalWebsite = ({
                 />
                 {websiteData !== null ? (
                   <>
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteRoute(route.uuid)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <FaRegTrashAlt />
-                  </button>
-                  <div>
-                    {route.status === "success" ? (
-                      <IoIosCheckmarkCircleOutline color="green" size={20} />
-                    ) : (
-                      <MdOutlineErrorOutline color="red" size={20} />
-                    )}
-                  </div>
-                </>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteRoute(route.uuid)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <FaRegTrashAlt />
+                    </button>
+                    <div
+                      data-tooltip-id="my-tooltip-styles"
+                      data-tooltip-content={route.response}
+                    >
+                      {route.status === "success" ? (
+                        <IoIosCheckmarkCircleOutline color="green" size={20} />
+                      ) : (
+                        <MdOutlineErrorOutline color="red" size={20} />
+                      )}
+                    </div>
+                    <Tooltip
+                      id="my-tooltip-styles"
+                      style={{ whiteSpace: "pre-wrap", maxWidth: "400px", wordWrap: "break-word" }}
+                      />
+                  </>
                 ) : (
                   <button
                     type="button"

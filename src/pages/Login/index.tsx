@@ -14,8 +14,8 @@ import { useTranslation } from "react-i18next";
 export function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("user@example.com");
-  const [password, setPassword] = useState<string>("securePassword!");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
   const { signInByEmail, isAuthenticated, signInByGoogle } =
@@ -73,6 +73,7 @@ export function Login() {
       console.log("Login Failed");
     },
   });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let valid = true;

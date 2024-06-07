@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { api } from "../../utils/api";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 export function RecoverPassword() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export function RecoverPassword() {
     event.preventDefault();
 
     if (!token) {
-      alert(t("recoverPassword.invalidToken"));
+      toast.warning(t("recoverPassword.invalidToken"));
       return;
     }
 
@@ -62,18 +63,18 @@ export function RecoverPassword() {
         token,
         password,
       });
-      console.log("token", token, "password", password);
-      console.log(response);
+      // console.log("token", token, "password", password);
+      // console.log(response);
 
       if (response.status === 201) {
-        alert(t("recoverPassword.successMessage"));
+        toast.success(t("recoverPassword.successMessage"));
         navigate("/login");
       } else {
-        alert(t("recoverPassword.errorMessage"));
+        toast.error(t("recoverPassword.errorMessage"));
       }
     } catch (error) {
       console.error("Erro ao redefinir senha:", error);
-      alert(t("recoverPassword.errorMessage"));
+      toast.error(t("recoverPassword.errorMessage"));
     }
   };
 

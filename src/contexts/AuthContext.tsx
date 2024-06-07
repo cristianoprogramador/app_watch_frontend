@@ -5,6 +5,8 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 import { parseCookies, destroyCookie, setCookie } from "nookies";
 import { api } from "../utils/api";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 export type UserDataDto = {
   uuid: string;
@@ -52,6 +54,8 @@ export const AuthContext = createContext<AuthContextData>(
 let authChannel: BroadcastChannel;
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const { t } = useTranslation();
+
   const [user, setUser] = useState<UserDataDto | null>(() => {
     const userLocalStorage = localStorage.getItem("user");
     return userLocalStorage ? JSON.parse(userLocalStorage) : null;
@@ -134,6 +138,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         password,
       });
 
+      toast.success(t("authContext.loginSucess"));
+
       setCookie(null, "auth.token", data.accessToken, {
         maxAge: 30 * 24 * 60 * 60, // 30 days
         path: "/",
@@ -145,10 +151,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("Login failed", error);
-        alert(error.response?.data?.message || "An unknown error occurred");
+        toast.error(error.response?.data?.message);
       } else {
         console.error("Login failed", error);
-        alert("An unknown error occurred");
+        toast.error(t("authContext.unknownError"));
       }
       return null;
     }
@@ -171,10 +177,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("Login failed", error);
-        alert(error.response?.data?.message || "An unknown error occurred");
+        toast.error(error.response?.data?.message);
       } else {
         console.error("Login failed", error);
-        alert("An unknown error occurred");
+        toast.error(t("authContext.unknownError"));
       }
       return null;
     }

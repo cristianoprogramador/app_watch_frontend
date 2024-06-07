@@ -11,6 +11,7 @@ import { RxUpdate } from "react-icons/rx";
 export function Home() {
   const { user } = useContext(AuthContext);
 
+  const [loading, setLoading] = useState(false);
   const [modalInfo, setModalInfo] = useState(false);
   const [currentWebsite, setCurrentWebsite] = useState<Website | null>(null);
 
@@ -46,6 +47,7 @@ export function Home() {
   };
 
   async function fetchProjects() {
+    setLoading(true);
     try {
       const response = await api.get(
         `/website-monitoring/user/${user?.uuid}?page=${actualPage}&itemsPerPage=${totalPerPage}` +
@@ -55,6 +57,8 @@ export function Home() {
       setProjectsData(response.data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -143,62 +147,64 @@ export function Home() {
           </Button>
         </div>
       </div>
-      <div className="flex flex-wrap gap-6 mt-4 justify-center items-center">
-        {projectsData?.websites.map((site: Website) => (
-          <div
-            key={site.uuid}
-            className="flex flex-col justify-between w-[400px] bg-theme-bg-card rounded-md p-3 m-2 cursor-pointer"
-            onClick={() => handleModalInfo(site)}
-          >
-            <div className="flex flex-row justify-between gap-6">
-              <div className="flex flex-col gap-1">
-                <div className="flex flex-row gap-2">
-                  <div
-                    className="cursor-pointer hover:opacity-65"
-                    onClick={(e) => handleUpdateSiteStatus(site.uuid, e)}
-                  >
-                    <RxUpdate size={20} />
+      {!loading ? (
+        <div className="flex flex-wrap gap-6 mt-4 justify-center items-center">
+          {projectsData?.websites.map((site: Website) => (
+            <div
+              key={site.uuid}
+              className="flex flex-col justify-between w-[400px] bg-theme-bg-card rounded-md p-3 m-2 cursor-pointer"
+              onClick={() => handleModalInfo(site)}
+            >
+              <div className="flex flex-row justify-between gap-6">
+                <div className="flex flex-col gap-1">
+                  <div className="flex flex-row gap-2">
+                    <div
+                      className="cursor-pointer hover:opacity-65"
+                      onClick={(e) => handleUpdateSiteStatus(site.uuid, e)}
+                    >
+                      <RxUpdate size={20} />
+                    </div>
+                    <div>{site.name}</div>
                   </div>
-                  <div>{site.name}</div>
+                  <a
+                    className="italic hover:text-blue-700"
+                    href={site.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {site.url}
+                  </a>
                 </div>
-                <a
-                  className="italic hover:text-blue-700"
-                  href={site.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <div
+                  className={`p-2 border ${getStatusClass(
+                    site?.siteStatus?.status
+                  )} flex text-center items-center h-10 rounded-md cursor-pointer`}
                 >
-                  {site.url}
-                </a>
-              </div>
-              <div
-                className={`p-2 border ${getStatusClass(
-                  site.siteStatus.status
-                )} flex text-center items-center h-10 rounded-md cursor-pointer`}
-              >
-                {site.siteStatus.status}
-              </div>
-            </div>
-            <div className="flex flex-row justify-between mt-4">
-              <div className="flex flex-col gap-1">
-                <div>{t("home.routes")}</div>
-                <div className="p-4 border border-gray-500 rounded-md text-center">
-                  {site.routes.length}
+                  {site?.siteStatus?.status}
                 </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <div>{t("home.routesWorking")}</div>
-                <div className="p-4 border border-gray-500 rounded-md text-center">
-                  {
-                    site.routes.filter(
-                      (route) => route.routeStatus?.status === "success"
-                    ).length
-                  }
+              <div className="flex flex-row justify-between mt-4">
+                <div className="flex flex-col gap-1">
+                  <div>{t("home.routes")}</div>
+                  <div className="p-4 border border-gray-500 rounded-md text-center">
+                    {site.routes.length}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <div>{t("home.routesWorking")}</div>
+                  <div className="p-4 border border-gray-500 rounded-md text-center">
+                    {
+                      site.routes.filter(
+                        (route) => route.routeStatus?.status === "success"
+                      ).length
+                    }
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : null}
 
       <ModalWebsite
         modalInfo={modalInfo}

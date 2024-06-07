@@ -8,7 +8,7 @@ export function App() {
     <>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_ID || ""}>
         <ProjectRoutes />
-        <ToastContainer position="top-right" />
+        <ToastContainer position="top-center" />
       </GoogleOAuthProvider>
     </>
   );

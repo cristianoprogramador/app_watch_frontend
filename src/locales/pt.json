@@ -141,5 +141,9 @@
     "searchButton": "Buscar",
     "disabledYes": "Sim",
     "disabledNo": "Não"
+  },
+  "authContext": {
+    "loginSucess": "Login com Sucesso!",
+    "unknownError": "Erro Desconhecido"
   }
 }

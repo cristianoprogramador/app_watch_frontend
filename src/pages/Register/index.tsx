@@ -7,6 +7,7 @@ import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { AuthContext } from "../../contexts/AuthContext";
 import InputMask from "react-input-mask";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 interface ApiResponse {
   message: string;
@@ -134,13 +135,13 @@ export function Register() {
       } catch (error) {
         if (error instanceof Error) {
           const axiosError = error as { response?: { data?: ApiResponse } };
-          alert(
+          toast.error(
             `${t("register.userRegistrationError")}${
               axiosError?.response?.data?.message
             }`
           );
         } else {
-          alert(t("register.userRegistrationError"));
+          toast.error(t("register.userRegistrationError"));
         }
       }
     }

@@ -5,6 +5,7 @@ import { api } from "../../utils/api";
 import InputMask from "react-input-mask";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 interface UserDetailsProps {
   typeDocument: string;
@@ -88,11 +89,9 @@ export function Profile() {
       } catch (error) {
         if (error instanceof Error) {
           const axiosError = error as { response?: { data?: ApiResponse } };
-          alert(
-            `Erro ao registrar usuário: ${axiosError?.response?.data?.message}`
-          );
+          toast.error(axiosError?.response?.data?.message);
         } else {
-          alert("Erro desconhecido ao registrar usuário.");
+          toast.error(t("authContext.unknownError"));
         }
       }
     }
