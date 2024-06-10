@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api } from "../../utils/api";
 import { GrDocumentExcel } from "react-icons/gr";
@@ -14,7 +13,6 @@ interface User {
 }
 
 export function Users() {
-  const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [actualPage, setActualPage] = useState<number>(1);

@@ -14,10 +14,11 @@ export function Home() {
   const [loading, setLoading] = useState(false);
   const [modalInfo, setModalInfo] = useState(false);
   const [currentWebsite, setCurrentWebsite] = useState<Website | null>(null);
+  const [updatingSiteId, setUpdatingSiteId] = useState<string | null>(null);
 
-  const [actualPage, setActualPage] = useState<number>(1);
-  const [totalPerPage, setTotalPerPage] = useState<number>(10);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [actualPage] = useState<number>(1);
+  const [totalPerPage] = useState<number>(10);
+  const [searchTerm] = useState("");
   const [projectsData, setProjectsData] = useState<ProjectsData | null>(null);
   const { t } = useTranslation();
 
@@ -67,11 +68,14 @@ export function Home() {
     e: React.MouseEvent
   ) => {
     e.stopPropagation();
+    setUpdatingSiteId(siteId);
     try {
       await api.post(`/website-monitoring/update-status/${siteId}`);
       fetchProjects();
     } catch (error) {
       console.error("Failed to update site status", error);
+    } finally {
+      setUpdatingSiteId(null);
     }
   };
 
@@ -96,9 +100,10 @@ export function Home() {
               status: update.status,
             },
             routes: site.routes.map((route) => {
-              const updatedRoute = update.routes.find(
-                (r) => r.routeId === route.uuid
-              );
+              const updatedRoute =
+                update.routes && Array.isArray(update.routes)
+                  ? update.routes.find((r) => r.routeId === route.uuid)
+                  : undefined;
               if (updatedRoute) {
                 return {
                   ...route,
@@ -162,7 +167,13 @@ export function Home() {
                       className="cursor-pointer hover:opacity-65"
                       onClick={(e) => handleUpdateSiteStatus(site.uuid, e)}
                     >
-                      <RxUpdate size={20} />
+                      {updatingSiteId === site.uuid ? (
+                        <div className="animate-spin">
+                          <RxUpdate size={20} />
+                        </div>
+                      ) : (
+                        <RxUpdate size={20} />
+                      )}
                     </div>
                     <div>{site.name}</div>
                   </div>

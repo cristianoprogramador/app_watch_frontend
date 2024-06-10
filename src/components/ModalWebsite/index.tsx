@@ -115,7 +115,7 @@ export const ModalWebsite = ({
     const confirmDelete = window.confirm(t("modalWebsites.areYouSureRoute"));
     if (!confirmDelete) return;
     try {
-      const response = await api.delete(
+      await api.delete(
         `/website-monitoring/routes/${routeId}`
       );
       // console.log("Route deleted successfully", response);
