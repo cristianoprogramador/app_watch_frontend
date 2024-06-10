@@ -131,7 +131,7 @@ export function Register() {
       try {
         const type = "client";
         registerNewUser(email, password, name, type, typeDocument, document);
-        navigate("/home");
+        // navigate("/home");
       } catch (error) {
         if (error instanceof Error) {
           const axiosError = error as { response?: { data?: ApiResponse } };

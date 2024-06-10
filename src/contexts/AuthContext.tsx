@@ -123,7 +123,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(data.userData);
       return data.userData;
     } catch (error) {
-      console.error("Login failed", error);
+      if (axios.isAxiosError(error)) {
+        console.error("Login failed", error);
+        toast.error(error.response?.data?.message);
+      } else {
+        console.error("Login failed", error);
+        toast.error(t("authContext.unknownError"));
+      }
       return null;
     }
   };
