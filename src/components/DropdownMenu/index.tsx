@@ -6,6 +6,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { FaUser, FaKey, FaSignOutAlt } from "react-icons/fa";
 import { ModalSendEmail } from "../ModalSendEmail";
 import { useTranslation } from "react-i18next";
+import profileImg from "@/assets/images/user-profile.png";
 
 interface DropdownMenuProps {}
 
@@ -50,16 +51,15 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = () => {
   };
 
   const profileImageUrl =
-    user?.userDetails.profileImageUrl || "images/user-profile.png";
+    user?.userDetails.profileImageUrl &&
+    user.userDetails.profileImageUrl.trim() !== ""
+      ? user.userDetails.profileImageUrl
+      : profileImg;
 
   return (
     <div className="relative" ref={dropdownRef}>
       <img
         src={profileImageUrl}
-        onError={(e) => {
-          const target = e.target as HTMLImageElement;
-          target.src = "images/user-profile.png";
-        }}
         alt="Profile"
         className="w-8 h-8 rounded-full object-cover cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}

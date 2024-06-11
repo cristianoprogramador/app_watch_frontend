@@ -14,6 +14,8 @@ import { useLanguage } from "../../contexts/LanguageContext";
 import { IoSettingsOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { FaUsers } from "react-icons/fa";
+import flagBrazil from "@/assets/images/flagbrazil.svg";
+import flagEUA from "@/assets/images/flagEUA.svg";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -156,7 +158,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             )}
             <div className="flex flex-row">
               <img
-                src={"public/images/flagbrazil.svg"}
+                src={flagBrazil}
                 alt="PT"
                 className={`w-[30px] h-[20px] cursor-pointer ${
                   language === "pt" ? "border rounded border-blue-500" : ""
@@ -164,7 +166,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 onClick={() => changeLanguage("pt")}
               />
               <img
-                src={"public/images/flagEUA.svg"}
+                src={flagEUA}
                 alt="EN"
                 className={`w-[30px] h-[20px] cursor-pointer ${
                   language === "en" ? "border rounded border-blue-500" : ""

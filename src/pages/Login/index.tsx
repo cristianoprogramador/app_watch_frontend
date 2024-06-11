@@ -10,6 +10,7 @@ import { ModalSendEmail } from "../../components/ModalSendEmail";
 import { Button } from "../../components/Button";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useTranslation } from "react-i18next";
+import loginImg from "@/assets/images/login.png";
 
 export function Login() {
   const navigate = useNavigate();
@@ -219,7 +220,7 @@ export function Login() {
         </div>
 
         <div className="hidden lg:flex animate-fadeIn">
-          <img src="public/images/login.png" alt="" />
+          <img src={loginImg} alt="" />
         </div>
       </div>
 

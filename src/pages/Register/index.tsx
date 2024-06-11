@@ -8,6 +8,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import InputMask from "react-input-mask";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
+import registerPNG from "@/assets/images/register.png";
 
 interface ApiResponse {
   message: string;
@@ -281,7 +282,7 @@ export function Register() {
 
         <div className="hidden lg:flex animate-fadeIn">
           <img
-            src="public/images/register.png"
+            src={registerPNG}
             alt=""
             style={{
               width: "100%",
