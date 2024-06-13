@@ -115,9 +115,7 @@ export const ModalWebsite = ({
     const confirmDelete = window.confirm(t("modalWebsites.areYouSureRoute"));
     if (!confirmDelete) return;
     try {
-      await api.delete(
-        `/website-monitoring/routes/${routeId}`
-      );
+      await api.delete(`/website-monitoring/routes/${routeId}`);
       // console.log("Route deleted successfully", response);
       fetchProjects();
       setModalInfo(false);
@@ -226,7 +224,18 @@ export const ModalWebsite = ({
                   className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
                   placeholder={`Rota ${index + 1}`}
                 />
-                {websiteData !== null ? (
+
+                {!route.uuid && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveRoute(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <FaRegTrashAlt />
+                  </button>
+                )}
+
+                {route.uuid && (
                   <>
                     <button
                       type="button"
@@ -247,17 +256,13 @@ export const ModalWebsite = ({
                     </div>
                     <Tooltip
                       id="my-tooltip-styles"
-                      style={{ whiteSpace: "pre-wrap", maxWidth: "400px", wordWrap: "break-word" }}
-                      />
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        maxWidth: "400px",
+                        wordWrap: "break-word",
+                      }}
+                    />
                   </>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveRoute(index)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <FaRegTrashAlt />
-                  </button>
                 )}
               </div>
               {(route.method === "POST" || route.method === "PUT") && (

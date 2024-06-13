@@ -111,7 +111,7 @@ export function Profile() {
 
   return (
     <div className="flex flex-col justify-center gap-10 items-center h-full">
-      <div className="w-[50%] bg-gray-200 flex flex-col justify-center items-center border rounded-lg">
+      <div className="w-[50%] max-w-[400px] bg-gray-200 flex flex-col justify-center items-center border rounded-lg">
         {!loading ? (
           <div className="w-[90%] px-4">
             <div className="text-center py-5 font-semibold text-xl text-gray-800">

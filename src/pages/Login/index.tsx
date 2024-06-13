@@ -28,7 +28,6 @@ export function Login() {
   const passwordSchema = z
     .string()
     .min(8, { message: t("login.passwordMinLength") })
-    .regex(/[A-Z]/, { message: t("login.passwordUppercase") });
 
   const handleModalInfo = () => {
     setModalInfo(true);

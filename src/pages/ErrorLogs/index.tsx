@@ -95,7 +95,7 @@ export function ErrorLogs() {
               </div>
             </div>
             <div className="overflow-y-auto flex-1 w-full border rounded-md">
-              <table className="divide-y divide-gray-200">
+              <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50 sticky top-0">
                   <tr className="text-xs text-center font-medium text-gray-500 uppercase">
                     <th className="lg:px-6 lg:py-3">
