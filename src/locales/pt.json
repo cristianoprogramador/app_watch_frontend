@@ -5,7 +5,9 @@
     "settings": "Configurações",
     "profile": "Perfil",
     "errorLogs": "Logs de Erros",
-    "users": "Usuários"
+    "users": "Usuários",
+    "websites": "Sites",
+    "routes": "Rotas"
   },
   "home": {
     "total": "Total de Projetos :",
@@ -141,6 +143,36 @@
     "searchButton": "Buscar",
     "disabledYes": "Sim",
     "disabledNo": "Não"
+  },
+  "websites": {
+    "title": "WebSites",
+    "name": "Nome",
+    "url": "URL",
+    "user": "Usuário",
+    "routes": "Qtde Rotas",
+    "createdAt": "Data de Criação",
+    "loading": "Carregando",
+    "total": "Total",
+    "itemsPerPage": "Itens por página",
+    "previous": "Anterior",
+    "next": "Próximo",
+    "searchPlaceholder": "Escreva aqui e clique em Buscar",
+    "searchButton": "Buscar"
+  },
+  "routes": {
+    "title": "Rotas",
+    "method": "Método",
+    "route": "Rota",
+    "userEmail": "E-mail",
+    "website": "Site",
+    "createdAt": "Data de Criação",
+    "loading": "Carregando",
+    "total": "Total",
+    "itemsPerPage": "Itens por página",
+    "previous": "Anterior",
+    "next": "Próximo",
+    "searchPlaceholder": "Escreva aqui e clique em Buscar",
+    "searchButton": "Buscar"
   },
   "authContext": {
     "loginSucess": "Login com Sucesso!",

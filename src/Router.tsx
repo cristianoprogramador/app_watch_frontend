@@ -16,6 +16,8 @@ import { Register } from "./pages/Register";
 import { RecoverPassword } from "./pages/RecoverPassword";
 import { ErrorLogs } from "./pages/ErrorLogs";
 import { Users } from "./pages/Users";
+import { Websites } from "./pages/Websites";
+import { RoutesPage } from "./pages/Routes";
 
 function PrivateRoute() {
   const { isAuthenticated } = useContext(AuthContext);
@@ -62,6 +64,8 @@ export function ProjectRoutes() {
           </Route>
           <Route element={<AdminRoute />}>
             <Route path="/errorLogs" element={<ErrorLogs />} />
+            <Route path="/websites" element={<Websites />} />
+            <Route path="/routes" element={<RoutesPage />} />
             <Route path="/users" element={<Users />} />
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />

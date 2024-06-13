@@ -12,10 +12,11 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { IoSettingsOutline } from "react-icons/io5";
-import { CgProfile } from "react-icons/cg";
+import { CgProfile, CgWebsite } from "react-icons/cg";
 import { FaUsers } from "react-icons/fa";
 import flagBrazil from "@/assets/images/flagbrazil.svg";
 import flagEUA from "@/assets/images/flagEUA.svg";
+import { TbRoute } from "react-icons/tb";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -84,6 +85,24 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <FaUsers size={20} />
                 {t("mainLayout.users")}
               </li>
+              <li
+                className={`p-4 hover:bg-blue-700 cursor-pointer flex flex-row items-center gap-3 ${
+                  isActive("/websites") && "bg-blue-900"
+                }`}
+                onClick={() => navigate("/websites")}
+              >
+                <CgWebsite size={20} />
+                {t("mainLayout.websites")}
+              </li>
+              <li
+                className={`p-4 hover:bg-blue-700 cursor-pointer flex flex-row items-center gap-3 ${
+                  isActive("/routes") && "bg-blue-900"
+                }`}
+                onClick={() => navigate("/routes")}
+              >
+                <TbRoute size={20} />
+                {t("mainLayout.routes")}
+              </li>
             </>
           )}
         </ul>
@@ -136,6 +155,22 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   onClick={() => navigate("/users")}
                 >
                   <FaUsers size={20} />
+                </li>
+                <li
+                  className={`p-2 hover:bg-blue-700 bg-blue-500 rounded-lg cursor-pointer flex flex-row items-center gap-3 ${
+                    isActive("/websites") && "bg-blue-900"
+                  }`}
+                  onClick={() => navigate("/websites")}
+                >
+                  <CgWebsite size={20} />
+                </li>
+                <li
+                  className={`p-2 hover:bg-blue-700 bg-blue-500 rounded-lg cursor-pointer flex flex-row items-center gap-3 ${
+                    isActive("/routes") && "bg-blue-900"
+                  }`}
+                  onClick={() => navigate("/routes")}
+                >
+                  <TbRoute size={20} />
                 </li>
               </>
             )}
