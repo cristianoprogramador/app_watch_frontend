@@ -44,6 +44,7 @@ export const ModalWebsite = ({
   const [routes, setRoutes] = useState<Route[]>(
     isEditing ? websiteData.routes : []
   );
+  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
 
   const handleAddRoute = () => {
@@ -56,6 +57,7 @@ export const ModalWebsite = ({
     event.preventDefault();
     const confirmDelete = window.confirm(t("modalWebsites.areYouSureSite"));
     if (!confirmDelete) return;
+    setLoading(true);
     try {
       await api.delete(`/website-monitoring/${websiteData?.uuid}`);
       // console.log("Route deleted successfully", response);
@@ -63,6 +65,8 @@ export const ModalWebsite = ({
       setModalInfo(false);
     } catch (error) {
       console.error("Failed to delete the website", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,6 +87,17 @@ export const ModalWebsite = ({
   };
 
   const handleAddOrEditWebsite = async () => {
+    if (!user?.uuid) {
+      console.error("User ID is missing");
+      return;
+    }
+
+    if (isEditing && !websiteData?.uuid) {
+      console.error("Website ID is missing");
+      return;
+    }
+
+    setLoading(true);
     const url = isEditing
       ? `/website-monitoring/${websiteData?.uuid}`
       : "/website-monitoring";
@@ -101,6 +116,8 @@ export const ModalWebsite = ({
       setModalInfo(false);
     } catch (error) {
       console.error("Error saving the website:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,13 +131,15 @@ export const ModalWebsite = ({
   const handleDeleteRoute = async (routeId: string) => {
     const confirmDelete = window.confirm(t("modalWebsites.areYouSureRoute"));
     if (!confirmDelete) return;
+    setLoading(true);
     try {
       await api.delete(`/website-monitoring/routes/${routeId}`);
-      // console.log("Route deleted successfully", response);
       fetchProjects();
       setModalInfo(false);
     } catch (error) {
       console.error("Failed to delete the route", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -241,6 +260,7 @@ export const ModalWebsite = ({
                       type="button"
                       onClick={() => handleDeleteRoute(route.uuid)}
                       className="text-red-500 hover:text-red-700"
+                      disabled={loading}
                     >
                       <FaRegTrashAlt />
                     </button>
@@ -298,12 +318,14 @@ export const ModalWebsite = ({
             <Button
               onClick={handleDeleteWebsites}
               className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700"
+              disabled={loading}
             >
               {t("modalWebsites.removeWebsite")}
             </Button>
           )}
           <Button
             type="submit"
+            disabled={loading}
             className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700"
           >
             {websiteData !== null

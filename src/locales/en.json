@@ -142,6 +142,36 @@
     "disabledYes": "Yes",
     "disabledNo": "No"
   },
+  "websites": {
+    "title": "Websites",
+    "name": "Name",
+    "url": "URL",
+    "user": "User",
+    "routes": "Route Count",
+    "createdAt": "Creation Date",
+    "loading": "Loading",
+    "total": "Total",
+    "itemsPerPage": "Items per page",
+    "previous": "Previous",
+    "next": "Next",
+    "searchPlaceholder": "Type here and click Search",
+    "searchButton": "Search"
+  },
+  "routes": {
+    "title": "Routes",
+    "method": "Method",
+    "route": "Route",
+    "userEmail": "Email",
+    "website": "Website",
+    "createdAt": "Creation Date",
+    "loading": "Loading",
+    "total": "Total",
+    "itemsPerPage": "Items per page",
+    "previous": "Previous",
+    "next": "Next",
+    "searchPlaceholder": "Type here and click Search",
+    "searchButton": "Search"
+  },
   "authContext": {
     "loginSucess": "Login Successful!",
     "unknownError": "Unknown Error"

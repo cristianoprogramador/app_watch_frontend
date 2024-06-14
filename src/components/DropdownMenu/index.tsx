@@ -65,7 +65,7 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = () => {
         onClick={() => setIsOpen(!isOpen)}
       />
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
+        <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-10">
           <div className="bg-gray-300 h-14 relative">
             <div className="flex items-center justify-center">
               <div className="w-14 h-14 rounded-full overflow-hidden relative mt-3">
