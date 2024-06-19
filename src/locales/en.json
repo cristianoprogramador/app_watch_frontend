@@ -5,7 +5,9 @@
     "settings": "Settings",
     "profile": "Profile",
     "errorLogs": "Error Logs",
-    "users": "Users"
+    "users": "Users",
+    "websites": "Websites",
+    "routes": "Routes"
   },
   "home": {
     "total": "Total Projects:",
@@ -105,10 +107,12 @@
     "portuguese": "Portuguese",
     "english": "English",
     "display": "Display",
+    "notifications": "Notifications",
     "lightMode": "Light Mode",
     "darkMode": "Dark Mode",
     "updateInterval": "Update Interval",
-    "code": "Code"
+    "code": "Code",
+    "notificationsMessage": "You will receive an email notification informing you of the route or website that has stopped working"
   },
   "errorLogs": {
     "title": "Error Logs",
@@ -175,5 +179,9 @@
   "authContext": {
     "loginSucess": "Login Successful!",
     "unknownError": "Unknown Error"
+  },
+  "activeSwitch": {
+    "active": "Active",
+    "inactive": "Inactive"
   }
 }

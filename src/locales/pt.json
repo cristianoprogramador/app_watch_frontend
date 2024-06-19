@@ -107,10 +107,12 @@
     "portuguese": "Português",
     "english": "Inglês",
     "display": "Exibição",
+    "notifications": "Notificações",
     "lightMode": "Modo Claro",
     "darkMode": "Modo Escuro",
     "updateInterval": "Tempo de Atualização",
-    "code": "Código"
+    "code": "Código",
+    "notificationsMessage": "Você receberá uma notificação via e-mail informando a rota ou site que parou de funcionar"
   },
   "errorLogs": {
     "title": "Logs de Erros",
@@ -177,5 +179,9 @@
   "authContext": {
     "loginSucess": "Login com Sucesso!",
     "unknownError": "Erro Desconhecido"
+  },
+  "activeSwitch": {
+    "active": "Ativo",
+    "inactive": "Inativo"
   }
 }

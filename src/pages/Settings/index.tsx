@@ -1,6 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { ActiveSwitch } from "@/components/ActiveSwitch";
+import { useContext, useState } from "react";
+import { CiSquareAlert } from "react-icons/ci";
+import { Tooltip } from "react-tooltip";
+import { AuthContext } from "@/contexts/AuthContext";
+import { api } from "@/utils/api";
 
 interface GitHubButtonProps {
   link: string;
@@ -11,6 +17,7 @@ export function Settings() {
   const { theme, toggleTheme } = useTheme();
   const { t } = useTranslation();
   const { language, changeLanguage } = useLanguage();
+  const { user } = useContext(AuthContext);
 
   const GitHubButton = ({ link, text }: GitHubButtonProps) => {
     const handleClick = () => {
@@ -41,9 +48,23 @@ export function Settings() {
     changeLanguage(selectedLanguage);
   };
 
+  const handleStatusChange = async (newStatus: boolean) => {
+    console.log(newStatus)
+    console.log(user!.userDetails.uuid)
+    try {
+      const response = await api.patch(
+        `/userDetails/${user!.userDetails.uuid}/notification-status`,
+        { receiveNotifications: newStatus }
+      );
+      console.log("Notification status updated successfully:", response.data);
+    } catch (error) {
+      console.error("Error updating notification status:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center gap-10 items-center h-full">
-      <div className="w-[50%] max-w-[400px] bg-gray-200 flex flex-col justify-center items-center border rounded-lg">
+      <div className="w-[70%] lg:w-[50%] max-w-[440px] bg-gray-200 flex flex-col justify-center items-center border rounded-lg">
         <div className="w-[90%] px-4">
           <div className="text-center py-5 font-semibold text-xl text-gray-800">
             {t("settings.generalPreferences")}
@@ -71,10 +92,31 @@ export function Settings() {
                 <option value="dark">{t("settings.darkMode")}</option>
               </select>
             </div>
-            {/* <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg p-4">
-              <div>{t("settings.updateInterval")}</div>
-              <div>30 Minutos</div>
-            </div> */}
+            <div className="flex flex-row justify-between w-full border border-gray-500 rounded-lg px-4 py-3 items-center">
+              <div className="flex flex-row gap-1">
+                {t("settings.notifications")}
+                <div
+                  data-tooltip-id="my-tooltip-styles"
+                  data-tooltip-content={
+                    t("settings.notificationsMessage")
+                  }
+                >
+                  <CiSquareAlert size={20} color="red" />
+                </div>
+                <Tooltip
+                      id="my-tooltip-styles"
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        maxWidth: "400px",
+                        wordWrap: "break-word",
+                      }}
+                    />
+              </div>
+              <ActiveSwitch
+                defaultValue={user!.userDetails.notifications}
+                onStatusChange={handleStatusChange}
+              />
+            </div>
           </div>
         </div>
         <div className="w-[90%] px-4">

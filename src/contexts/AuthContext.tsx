@@ -16,6 +16,7 @@ export type UserDataDto = {
     uuid: string;
     name: string;
     profileImageUrl: string;
+    notifications: boolean
   };
 };
 
