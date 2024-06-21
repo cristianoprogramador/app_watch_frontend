@@ -49,8 +49,6 @@ export function Settings() {
   };
 
   const handleStatusChange = async (newStatus: boolean) => {
-    console.log(newStatus)
-    console.log(user!.userDetails.uuid)
     try {
       const response = await api.patch(
         `/userDetails/${user!.userDetails.uuid}/notification-status`,
@@ -97,20 +95,18 @@ export function Settings() {
                 {t("settings.notifications")}
                 <div
                   data-tooltip-id="my-tooltip-styles"
-                  data-tooltip-content={
-                    t("settings.notificationsMessage")
-                  }
+                  data-tooltip-content={t("settings.notificationsMessage")}
                 >
                   <CiSquareAlert size={20} color="red" />
                 </div>
                 <Tooltip
-                      id="my-tooltip-styles"
-                      style={{
-                        whiteSpace: "pre-wrap",
-                        maxWidth: "400px",
-                        wordWrap: "break-word",
-                      }}
-                    />
+                  id="my-tooltip-styles"
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    maxWidth: "400px",
+                    wordWrap: "break-word",
+                  }}
+                />
               </div>
               <ActiveSwitch
                 defaultValue={user!.userDetails.notifications}

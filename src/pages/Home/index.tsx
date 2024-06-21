@@ -54,7 +54,7 @@ export function Home() {
         `/website-monitoring/user/${user?.uuid}?page=${actualPage}&itemsPerPage=${totalPerPage}` +
           (searchTerm ? `&search=${searchTerm}` : "")
       );
-      console.log(response.data);
+      // console.log(response.data);
       setProjectsData(response.data);
     } catch (error) {
       console.error(error);

@@ -208,7 +208,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const response = await verifyToken();
         // console.log(response);
         if (response) {
-          console.log(response);
+          // console.log(response);
           setUser(response);
         }
       } catch (error) {
