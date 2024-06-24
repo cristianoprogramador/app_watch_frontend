@@ -28,7 +28,9 @@
     "addAnotherRoute": "Adicionar outra rota",
     "removeWebsite": "Excluir Site",
     "update": "Atualizar",
-    "register": "Cadastrar"
+    "register": "Cadastrar",
+    "route": "Rota",
+    "body": "Body da Requisição"
   },
   "modalSendEmail": {
     "resetPassword": "Se o email estiver cadastrado, você receberá um link para redefinir sua senha.",
@@ -182,6 +184,7 @@
   },
   "activeSwitch": {
     "active": "Ativo",
-    "inactive": "Inativo"
+    "inactive": "Inativo",
+    "confirmChange": "Deseja ativar o sistema de Notificações?"
   }
 }

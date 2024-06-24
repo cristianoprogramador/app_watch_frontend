@@ -118,11 +118,15 @@ export function ErrorLogs() {
                       <td>{log.statusCode}</td>
                       <td>{log.error}</td>
                       <td>
-                        {log.message.length > 200
-                          ? `${log.message.slice(0, 200)}...`
+                        {log.message.length > 50
+                          ? `${log.message.slice(0, 50)}...`
                           : log.message}
                       </td>
-                      <td>{log.url}</td>
+                      <td>
+                        {log.url.length > 50
+                          ? `${log.url.slice(0, 50)}...`
+                          : log.url}
+                      </td>
                       <td>{log.method}</td>
                       <td>{new Date(log.createdAt).toLocaleString()}</td>
                     </tr>

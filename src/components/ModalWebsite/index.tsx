@@ -241,7 +241,7 @@ export const ModalWebsite = ({
                     handleRouteChange(index, "route", e.target.value)
                   }
                   className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
-                  placeholder={`Rota ${index + 1}`}
+                  placeholder={t("modalWebsites.route", { index: index + 1 })}
                 />
 
                 {!route.uuid && (
@@ -296,7 +296,7 @@ export const ModalWebsite = ({
                       handleRouteChange(index, "body", e.target.value)
                     }
                     className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
-                    placeholder="Body da requisição"
+                    placeholder={t("modalWebsites.body")}
                   />
                 </div>
               )}

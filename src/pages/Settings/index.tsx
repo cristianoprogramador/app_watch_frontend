@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { ActiveSwitch } from "@/components/ActiveSwitch";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { CiSquareAlert } from "react-icons/ci";
 import { Tooltip } from "react-tooltip";
 import { AuthContext } from "@/contexts/AuthContext";

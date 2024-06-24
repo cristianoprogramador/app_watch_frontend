@@ -28,7 +28,9 @@
     "addAnotherRoute": "Add another route",
     "removeWebsite": "Delete Site",
     "update": "Update",
-    "register": "Register"
+    "register": "Register",
+    "route": "Route",
+    "body": "Request Body"
   },
   "modalSendEmail": {
     "resetPassword": "If the email is registered, you will receive a link to reset your password.",
@@ -182,6 +184,7 @@
   },
   "activeSwitch": {
     "active": "Active",
-    "inactive": "Inactive"
+    "inactive": "Inactive",
+    "confirmChange": "Do you want to activate the Notifications system?"
   }
 }
