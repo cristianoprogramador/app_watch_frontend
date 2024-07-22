@@ -1,7 +1,11 @@
-// src/pages/Login/index.tsx
-
-import { useContext, useEffect, useState } from "react";
-import { z } from "zod";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { z, ZodSchema } from "zod";
 import { useNavigate } from "react-router-dom";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -14,11 +18,11 @@ import loginImg from "@/assets/images/login.png";
 
 export function Login() {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [emailError, setEmailError] = useState<string>("");
-  const [passwordError, setPasswordError] = useState<string>("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const { signInByEmail, isAuthenticated, signInByGoogle } =
     useContext(AuthContext);
   const [modalInfo, setModalInfo] = useState(false);
@@ -27,54 +31,40 @@ export function Login() {
   const emailSchema = z.string().email({ message: t("login.invalidEmail") });
   const passwordSchema = z
     .string()
-    .min(8, { message: t("login.passwordMinLength") })
+    .min(8, { message: t("login.passwordMinLength") });
 
-  const handleModalInfo = () => {
-    setModalInfo(true);
-  };
+  const handleModalInfo = () => setModalInfo(true);
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newEmail = e.target.value;
-    setEmail(newEmail);
-    try {
-      emailSchema.parse(newEmail);
-      setEmailError("");
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        setEmailError(error.errors[0].message);
+  const handleInputChange =
+    (
+      setter: Dispatch<SetStateAction<string>>,
+      schema: ZodSchema,
+      setError: Dispatch<SetStateAction<string>>
+    ) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setter(value);
+      try {
+        schema.parse(value);
+        setError("");
+      } catch (error) {
+        if (error instanceof z.ZodError) setError(error.errors[0].message);
       }
-    }
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newPassword = e.target.value;
-    setPassword(newPassword);
-    try {
-      passwordSchema.parse(newPassword);
-      setPasswordError("");
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        setPasswordError(error.errors[0].message);
-      }
-    }
-  };
+    };
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        const token = tokenResponse.access_token;
-        await signInByGoogle(token);
+        await signInByGoogle(tokenResponse.access_token);
         navigate("/home");
       } catch (error) {
         console.error("Erro ao fazer login com Google:", error);
       }
     },
-    onError: () => {
-      console.log("Login Failed");
-    },
+    onError: () => console.log("Login Failed"),
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     let valid = true;
 
@@ -83,10 +73,7 @@ export function Login() {
       setEmailError("");
     } catch (error) {
       if (error instanceof z.ZodError) {
-        setEmailError(
-          error.errors.find((e) => e.path.includes("email"))?.message ||
-            "E-mail inválido"
-        );
+        setEmailError(error.errors[0].message);
       }
       valid = false;
     }
@@ -95,28 +82,18 @@ export function Login() {
       setPasswordError("");
     } catch (error) {
       if (error instanceof z.ZodError) {
-        setPasswordError(
-          error.errors.find((e) => e.path.includes("password"))?.message ||
-            "Erro na senha"
-        );
+        setPasswordError(error.errors[0].message);
       }
       valid = false;
     }
     if (valid) {
       await signInByEmail(email, password);
-
       navigate("/home");
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/home", { replace: true });
-    }
+    if (isAuthenticated) navigate("/home", { replace: true });
   }, [isAuthenticated, navigate]);
 
   return (
@@ -124,7 +101,7 @@ export function Login() {
       <div className="flex flex-row h-full gap-4 items-center justify-center bg-theme-bg w-full">
         <div className="flex lg:w-1/2 justify-center items-center">
           <div className="p-10 rounded-md sm:border bg-white">
-            <div className=" text-center text-2xl lg:text-4xl font-bold">
+            <div className="text-center text-2xl lg:text-4xl font-bold">
               {t("login.accessAccount")}
             </div>
             <div className="mt-3 text-sm">{t("login.welcomeBack")}</div>
@@ -138,7 +115,11 @@ export function Login() {
                 className="placeholder:text-gray-900 text-gray-900 font-light p-0 text-left text-sm w-full border px-3 py-2 rounded-md"
                 type="email"
                 value={email}
-                onChange={handleEmailChange}
+                onChange={handleInputChange(
+                  setEmail,
+                  emailSchema,
+                  setEmailError
+                )}
               />
               {emailError && (
                 <div className="text-xs text-red-500">{emailError}</div>
@@ -151,18 +132,22 @@ export function Login() {
                   className="font-light text-left text-sm w-full border px-3 py-2 rounded-md"
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={handlePasswordChange}
+                  onChange={handleInputChange(
+                    setPassword,
+                    passwordSchema,
+                    setPasswordError
+                  )}
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
                   {showPassword ? (
                     <IoEyeOutline
-                      onClick={togglePasswordVisibility}
+                      onClick={() => setShowPassword(!showPassword)}
                       className="cursor-pointer"
                       size={20}
                     />
                   ) : (
                     <IoEyeOffOutline
-                      onClick={togglePasswordVisibility}
+                      onClick={() => setShowPassword(!showPassword)}
                       className="cursor-pointer"
                       size={20}
                     />
@@ -175,7 +160,7 @@ export function Login() {
               <div className="flex flex-row items-center justify-end md:w-full">
                 <div
                   className="text-blue-700 font-semibold text-right text-sm cursor-pointer"
-                  onClick={() => handleModalInfo()}
+                  onClick={handleModalInfo}
                 >
                   {t("login.forgotPassword")}
                 </div>

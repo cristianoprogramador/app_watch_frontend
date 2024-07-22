@@ -1,6 +1,6 @@
 import { Suspense, useContext } from "react";
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Routes,
   Route,
   Navigate,
@@ -52,7 +52,7 @@ function AdminRoute() {
 export function ProjectRoutes() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Router>
+      <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -70,7 +70,7 @@ export function ProjectRoutes() {
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
-      </Router>
+      </BrowserRouter>
     </Suspense>
   );
 }
